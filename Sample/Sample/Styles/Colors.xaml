@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms" 
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Color x:Key="DarkSurface">#121212</Color>
+
+    <Color x:Key="DarkElevation2dp">#212121</Color>
+    <Color x:Key="DarkElevation4dp">#272727</Color>
+    <Color x:Key="DarkElevation8dp">#2D2D2D</Color>
+    <Color x:Key="DarkElevation12dp">#323232</Color>
+    <Color x:Key="DarkElevation16dp">#353535</Color>
+    <Color x:Key="DarkElevation24dp">#373737</Color>
+
+    <Color x:Key="PrimaryColor">#FF7597</Color>
+    <Color x:Key="SecondaryColor">#FF0266</Color>
+
+    <Color x:Key="OnPrimaryColor">#000000</Color>
+    <Color x:Key="OnSecondaryColor">#000000</Color>
+
+    <Color x:Key="OnSurfaceColor">#FFFFFF</Color>
+
+    <Color x:Key="NavigationBarColor">#212121</Color>
+    <Color x:Key="BarTextColor">#FFFFFF</Color>
+
+    <Color x:Key="TextPrimaryColor">#FFFFFF</Color>
+    <Color x:Key="TextSecondaryColor">#C0C0C0</Color>
+    <Color x:Key="TextTernaryColor">#A0A0A0</Color>
+
+    <!--<Color x:Key="ColorEffortUnknown">#6c6c6c</Color>
+    <Color x:Key="ColorEffortLightest">#00b4d1</Color>
+    <Color x:Key="ColorEffortLight">#6177dc</Color>
+    <Color x:Key="ColorEffortAerobic">#25c743</Color>
+    <Color x:Key="ColorEffortAnaerobic">#ff7b00</Color>
+    <Color x:Key="ColorEffortMax">#de0a1c</Color>-->
+
+    <Color x:Key="ColorEffortUnknown">#6c6c6c</Color>
+    <Color x:Key="ColorEffortLightest">#25c743</Color>
+    <Color x:Key="ColorEffortLight">#00b4d1</Color>
+    <Color x:Key="ColorEffortAerobic">#ffee58</Color>
+    <Color x:Key="ColorEffortAnaerobic">#ff7b00</Color>
+    <Color x:Key="ColorEffortMax">#de0a1c</Color>
+
+
+    <Color x:Key="ColorEffortSpeedMin">#ffee58</Color>
+
+</ResourceDictionary>

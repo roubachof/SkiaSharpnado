@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:localization="clr-namespace:Sample.Localization;assembly=Sample"
+             mc:Ignorable="d"
+             x:Class="Sample.Views.MainIndicatorsView">
+
+    <ContentView.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="2" 
+                   Style="{StaticResource MainIndicatorsLabel}" 
+                   Text="{localization:Translate DistanceKm}" />
+
+            <Label Grid.Row="0" Grid.Column="0" 
+                   Style="{StaticResource MainIndicatorsLabel}" 
+                   Text="{localization:Translate Time}" />
+
+            <Label Grid.Row="0" Grid.Column="1" 
+                   Style="{StaticResource MainIndicatorsLabel}" 
+                   Text="{localization:Translate Calories}" />
+
+            <Label Grid.Row="1" Grid.Column="2" 
+                   Style="{StaticResource MainIndicatorsValue}" 
+                   Text="{Binding DisplayableDistance}" />
+
+            <Label Grid.Row="1" Grid.Column="0" 
+                   Style="{StaticResource MainIndicatorsValue}" 
+                   Text="{Binding DisplayableTimeSpan}" />
+
+            <Label Grid.Row="1" Grid.Column="1" 
+                   Style="{StaticResource MainIndicatorsValue}" 
+                   Text="{Binding CaloriesBurnt}" />
+        </Grid>
+    </ContentView.Content>
+</ContentView>

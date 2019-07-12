@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:map="clr-namespace:SkiaSharpnado.Maps.Presentation.Views.SessionMap;assembly=SkiaSharpnado.Maps"
+             xmlns:viewModels="clr-namespace:Sample.ViewModels;assembly=Sample"
+             xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms"
+             xmlns:loc="clr-namespace:Sample.Localization;assembly=Sample"
+             xmlns:forms="clr-namespace:TouchTracking.Forms;assembly=TouchTracking.Forms"
+             xmlns:forms1="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:views="clr-namespace:Sample.Views;assembly=Sample"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModels:ActivityPageViewModel}"
+             Title="{Binding Title}"
+             ios:Page.UseSafeArea="true"
+             x:Class="Sample.Views.ActivityPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="IndicatorsIcons" TargetType="Image">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="Aspect" Value="Fill" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <customViews:TaskLoaderView ViewModelLoader="{Binding Loader}" 
+                                    AccentColor="{StaticResource PrimaryColor}" 
+                                    TextColor="{StaticResource OnSurfaceColor}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="200"/>
+                </Grid.RowDefinitions>
+
+                <map:SessionMap x:Name="SessionMap" SessionMapInfo="{Binding Loader.Result}" />
+
+                <Grid Row="1" RowSpacing="{StaticResource SpacingMedium}" ColumnSpacing="{StaticResource SpacingMedium}"
+                      Padding="{StaticResource ThicknessMedium}"
+                      BindingContext="{Binding Header}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Frame Grid.Row="0" Grid.ColumnSpan="2" 
+                           CornerRadius="6" 
+                           Padding="15, 0, 15, 5"
+                           HasShadow="False"
+                           BackgroundColor="{StaticResource DarkElevation2dp}">
+                        <views:MainIndicatorsView Margin="0, 8, 0, 0"/>
+                    </Frame>
+
+                    <Frame Grid.Row="1" Grid.Column="0"
+                           CornerRadius="6" 
+                           Padding="{StaticResource ThicknessMedium}"
+                           HasShadow="False"
+                           BackgroundColor="{StaticResource DarkElevation2dp}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Row="1" Grid.Column="0" 
+                                   Style="{StaticResource IndicatorsIcons}"
+                                   Source="{StaticResource IconHeartRateLarge}" />
+
+                            <Label Grid.Row="0" Grid.Column="1" 
+                                   Style="{StaticResource MainIndicatorsLabel}" 
+                                   Text="{loc:Translate Average}" />
+
+                            <Label Grid.Row="1" Grid.Column="1" 
+                                   Style="{StaticResource MainIndicatorsValue}"
+                                   Text="{Binding DisplayableAverageHeartRate}" />
+                        </Grid>
+                    </Frame>
+
+                    <Frame Grid.Row="1" Grid.Column="1" 
+                           CornerRadius="6" 
+                           Padding="{StaticResource ThicknessMedium}"
+                           HasShadow="False"
+                           BackgroundColor="{StaticResource DarkElevation2dp}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Row="1" Grid.Column="0"
+                                   Style="{StaticResource IndicatorsIcons}"
+                                   Source="{StaticResource IconSpeedRateLarge}" />
+
+                            <Label Grid.Row="0" Grid.Column="1" 
+                                   Style="{StaticResource MainIndicatorsLabel}" 
+                                   Text="{loc:Translate Average}" />
+
+                            <Label Grid.Row="1" Grid.Column="1" 
+                                   Style="{StaticResource MainIndicatorsValue}"
+                                   Text="{Binding DisplayableAverageSpeed}" />
+                        </Grid>
+                    </Frame>
+
+                </Grid>
+
+                <!--<Grid Row="1">
+                    <forms1:SKCanvasView x:Name="Graph"
+                                        PaintSurface="GraphOnPaintSurface" />
+                    <Grid.Effects>
+                        <forms:TouchEffect Capture="True"
+                                             TouchAction="OnTouchEffectAction" />
+                    </Grid.Effects>
+                </Grid>-->
+
+            </Grid>
+        </customViews:TaskLoaderView>
+    </ContentPage.Content>
+</ContentPage>

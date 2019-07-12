@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml"/>
+        <ResourceDictionary Source="Text.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+  
+    <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="{StaticResource DarkSurface}" />
+    </Style>
+
+    <Style ApplyToDerivedTypes="True" TargetType="Grid">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ColumnSpacing" Value="0" />
+        <Setter Property="RowSpacing" Value="0" />
+    </Style>
+
+    <Style TargetType="NavigationPage">
+        <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationBarColor}"/>
+        <Setter Property="BarTextColor" Value="{StaticResource BarTextColor}"/>
+    </Style>
+
+    <Style x:Key="MainIndicatorsLabel" BasedOn="{StaticResource TextCaptionSecondary}" TargetType="Label">
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="MainIndicatorsValue" BasedOn="{StaticResource TextHuge}" TargetType="Label">
+        <Setter Property="VerticalTextAlignment" Value="Start" />
+    </Style>
+
+    <!--<Style TargetType="customViews:TaskLoaderView">
+        <Setter Property="AccentColor" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="TextColor" Value="{StaticResource OnSurfaceColor}"/>
+    </Style>-->
+
+</ResourceDictionary>
