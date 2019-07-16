@@ -262,4 +262,3 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-ParisTurf\.Exalt\.Android/Resources/Resource\.Designer\.cs
