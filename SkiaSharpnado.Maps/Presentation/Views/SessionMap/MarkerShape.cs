@@ -8,22 +8,28 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 {
     public class MarkerShape : AShape
     {
-        private const int ArrowLength = 4;
-
+        private int _arrowLength;
         private SKPoint _p1;
         private SKPoint _p2;
 
         private double _opacity = 1;
 
-        public MarkerShape(TimeSpan time)
+        public MarkerShape(TimeSpan time, int arrowLength)
         {
             Time = time;
+            _arrowLength = arrowLength;
         }
 
-        public void UpdatePosition(SKPoint p1, SKPoint p2)
+        public MarkerShape UpdatePosition(SKPoint p1, SKPoint p2)
         {
             _p1 = p1;
             _p2 = p2;
+            return this;
+        }
+
+        public void UpdateArrowLength(int arrowLength)
+        {
+            _arrowLength = arrowLength;
         }
 
         public override void UpdateOpacity(double opacity)
@@ -39,7 +45,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             vx /= dist;
             vy /= dist;
 
-            DrawArrowhead(canvas, paint, _p2, vx, vy, SkiaHelper.ToPixel(ArrowLength));
+            DrawArrowhead(canvas, paint, _p2, vx, vy, SkiaHelper.ToPixel(_arrowLength));
         }
 
         protected override SKRect ComputeBoundBox()

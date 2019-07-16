@@ -9,13 +9,13 @@ using Xamarin.Forms;
 
 namespace Sample.Domain
 {
-    public static class RunningEffortComputer
+    public static class HumanEffortComputer
     {
         public static EffortComputer ByHeartBeat { get; }
 
         public static EffortComputer BySpeed { get; }
 
-        static RunningEffortComputer()
+        static HumanEffortComputer()
         {
             ByHeartBeat = new EffortComputer(
                 new List<EffortSpan>

@@ -5,12 +5,15 @@ using System.Linq;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 
+using SkiaSharpnado.Maps.Images;
 using SkiaSharpnado.Maps.Domain;
 using SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap;
 using SkiaSharpnado.SkiaSharp;
 
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+
+using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
 
 namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 {
@@ -27,7 +30,20 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             typeof(TimeSpan),
             typeof(SessionMap),
             defaultValue: TimeSpan.MaxValue,
-            propertyChanged: MaxTimeChanged);
+            propertyChanged: InvalidateSurface);
+
+        public static readonly BindableProperty PathThicknessProperty = BindableProperty.Create(
+            nameof(PathThickness),
+            typeof(int),
+            typeof(SessionMap),
+            2,
+            propertyChanged: InvalidateSurface);
+
+        public static readonly BindableProperty InfoColorProperty = BindableProperty.Create(
+            nameof(InfoColor),
+            typeof(Color),
+            typeof(SessionMap),
+            Color.Default);
 
         private MarkerShapeLayer _markerLayer;
 
@@ -52,10 +68,18 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
         private SKPicture _overlayPicture;
         private SKMatrix _currentMatrix = SKMatrix.MakeIdentity();
 
+        private SKSvg _startImage;
+        private SKSvg _endImage;
+        private SKColor _firstImageColor;
+        private SKColor _lastImageColor;
+        private float _pictureSize;
+
         private SKPaint _markerPaint;
         private SKPaint _lastMarkerPaint;
         private SKPaint _gradientPathPaint;
         private SKPaint _distanceTextPaint;
+
+        private int _markerArrowSize;
 
         public SessionMap()
         {
@@ -90,6 +114,18 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             set => SetValue(MaxTimeProperty, value);
         }
 
+        public int PathThickness
+        {
+            get => (int)GetValue(PathThicknessProperty);
+            set => SetValue(PathThicknessProperty, value);
+        }
+
+        public Color InfoColor
+        {
+            get => (Color)GetValue(InfoColorProperty);
+            set => SetValue(InfoColorProperty, value);
+        }
+
         private static void SessionMapInfoChanged(BindableObject bindable, object oldvalue, object newvalue)
         {
             if (newvalue != null)
@@ -98,7 +134,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             }
         }
 
-        private static void MaxTimeChanged(BindableObject bindable, object oldvalue, object newvalue)
+        private static void InvalidateSurface(BindableObject bindable, object oldvalue, object newvalue)
         {
             ((SessionMap)bindable).MapOverlay.InvalidateSurface();
         }
@@ -116,7 +152,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private void Initialize()
         {
-            Debug.WriteLine($"Initialize");
+            Debug.WriteLine($"Initializing {SessionMapInfo.SessionPoints.Count} points");
 
             _positionConverter = new PositionConverter();
 
@@ -139,7 +175,32 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             _previousCenter = SKPoint.Empty;
             _previousTopLeftBottomRightSquareDistance = 1;
 
+            InitializeSvgImages();
+
             InitializeMap();
+        }
+
+
+        private void InitializeSvgImages()
+        {
+            const string StartImageName = "stopwatch-solid.svg";
+            const string EndImageName = "flag-checkered-solid.svg";
+
+            using (var stream = Embedded.Load(StartImageName))
+            {
+                _startImage = new SKSvg();
+                _startImage.Load(stream);
+            }
+
+            using (var stream = Embedded.Load(EndImageName))
+            {
+                _endImage = new SKSvg();
+                _endImage.Load(stream);
+            }
+
+            _pictureSize = SkiaHelper.ToPixel(20);
+            _firstImageColor = SessionMapInfo.SessionPoints.First().MapPointColor.ToSKColor();
+            _lastImageColor = SessionMapInfo.SessionPoints.Last().MapPointColor.ToSKColor();
         }
 
         private void InitializeMap()
@@ -151,13 +212,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 if (GoogleMap.Bounds.Size != Size.Zero && Device.RuntimePlatform == Device.iOS)
                 {
                     GoogleMap.MoveCamera(CameraUpdateFactory.NewBounds(SessionMapInfo.Region, 20));
-                    _isCameraInitialized = true;
-                    _isCameraInitializing = false;
                 }
-                else
-                {
-                    _isCameraInitializing = true;
-                }
+
+                _isCameraInitializing = true;
 
                 if (Device.RuntimePlatform == Device.UWP)
                 {
@@ -173,7 +230,15 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
         private void CameraChanged(object sender, CameraChangedEventArgs e)
         {
             Debug.WriteLine($"CameraChanged");
-            OnMapDisplayed();
+
+            if (!_isCameraInitialized)
+            {
+                OnMapDisplayed();
+                return;
+            }
+
+            _movingCameraPosition = e.Position;
+            MapOverlay.InvalidateSurface();
         }
 
         private void CameraIdled(object sender, CameraIdledEventArgs e)
@@ -201,9 +266,50 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private void CameraMoving(object sender, CameraMovingEventArgs e)
         {
-            Debug.WriteLine($"CameraMoving: INVALIDATING");
+            // Debug.WriteLine($"CameraMoving: INVALIDATING");
             _movingCameraPosition = e.Position;
             MapOverlay.InvalidateSurface();
+        }
+
+        private void InitializeMapResourcesIfNeeded()
+        {
+            if (_gradientPathPaint != null)
+            {
+                return;
+            }
+
+            InitializeSvgImages();
+
+            _gradientPathPaint = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true,
+                StrokeWidth = SkiaHelper.ToPixel(PathThickness),
+                StrokeCap = SKStrokeCap.Butt,
+                MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Solid, 2),
+            };
+
+            _markerPaint = new SKPaint
+            {
+                IsAntialias = true,
+                Color = SKColors.White,
+            };
+
+            _lastMarkerPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = SkiaHelper.ToPixel(PathThickness * 1.5),
+                Style = SKPaintStyle.Stroke,
+            };
+
+            _distanceTextPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                TextSize = SkiaHelper.ToPixel(12),
+                IsAntialias = true,
+            };
+
+            _markerArrowSize = (int)(PathThickness * 1.5);
         }
 
         private void ReleaseMapResources()
@@ -219,40 +325,6 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
             _distanceTextPaint?.Dispose();
             _distanceTextPaint = null;
-        }
-
-        private void InitializeMapResourcesIfNeeded()
-        {
-            if (_gradientPathPaint != null)
-            {
-                return;
-            }
-
-            _gradientPathPaint = new SKPaint
-            {
-                Style = SKPaintStyle.StrokeAndFill,
-                StrokeWidth = SkiaHelper.ToPixel(2),
-            };
-
-            _markerPaint = new SKPaint
-            {
-                IsAntialias = true,
-                Color = SKColors.White,
-            };
-
-            _lastMarkerPaint = new SKPaint
-            {
-                Color = SKColors.White,
-                StrokeWidth = SkiaHelper.ToPixel(2),
-                Style = SKPaintStyle.Stroke,
-            };
-
-            _distanceTextPaint = new SKPaint
-            {
-                Color = SKColors.White,
-                TextSize = SkiaHelper.ToPixel(12),
-                IsAntialias = true,
-            };
         }
 
         private void ApplyTransformation(SKCanvas canvas)
@@ -293,7 +365,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
             var stopWatch = Stopwatch.StartNew();
             
-            Debug.WriteLine($"MapOnPaintSurface");
+            // Debug.WriteLine($"MapOnPaintSurface");
 
             if (SessionMapInfo == null || !_isCameraInitialized)
             {
@@ -387,12 +459,13 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 {
                     if (!_markerLayer.HasShape)
                     {
-                        _markerLayer.Add(new MarkerShape(sessionPoint.Time));
+                        _markerLayer.Add(new MarkerShape(sessionPoint.Time, _markerArrowSize));
                     }
 
                     _markerLayer
                         .GetCurrentShape()
-                        .UpdatePosition(previousPoint, pathPoint);
+                        .UpdatePosition(previousPoint, pathPoint)
+                        .UpdateArrowLength(_markerArrowSize);
 
                     _markerLayer.IncrementIndex();
                 }
@@ -419,10 +492,13 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             _markerLayer.UpdateMaxTime(MaxTime);
             _markerLayer.Draw(canvas, _markerPaint);
 
+            DrawFirstAndLastMarker(
+                canvas,
+                sessionPoints.First(),
+                sessionPoints.Last());
+
             _textDistanceLayer.UpdateMaxTime(MaxTime);
             _textDistanceLayer.Draw(canvas, _distanceTextPaint);
-
-            DrawLastMarker(canvas, previousPoint);
 
             _isOverlayDrawn = true;
 
@@ -442,9 +518,51 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             Debug.WriteLine($"END OF => MapOnPaintSurface ({stopWatch.Elapsed})");
         }
 
-        private void DrawLastMarker(SKCanvas canvas, SKPoint lastPoint)
+        private void DrawFirstAndLastMarker(SKCanvas canvas, ISessionDisplayablePoint firstSessionPoint, ISessionDisplayablePoint lastSessionPoint)
         {
-            canvas.DrawCircle(lastPoint.X, lastPoint.Y, SkiaHelper.ToPixel(3), _lastMarkerPaint);
+            var firstPoint = _positionConverter[firstSessionPoint.Position].ToSKPoint();
+            var lastPoint = _positionConverter[lastSessionPoint.Position].ToSKPoint();
+
+            float svgStartMax = Math.Max(_startImage.Picture.CullRect.Width, _startImage.Picture.CullRect.Height);
+            float startScale = _pictureSize / svgStartMax;
+
+            var startMatrix = SKMatrix.MakeIdentity();
+            startMatrix.SetScaleTranslate(
+                startScale,
+                startScale,
+                firstPoint.X - (_pictureSize / 2),
+                firstPoint.Y - (_pictureSize / 2));
+
+            using (var picturePaint = new SKPaint()
+                {
+                    ColorFilter = SKColorFilter.CreateBlendMode(
+                        InfoColor == Color.Default ? _firstImageColor : InfoColor.ToSKColor(),
+                        SKBlendMode.SrcIn)
+                })
+            {
+                canvas.DrawPicture(_startImage.Picture, ref startMatrix, picturePaint);
+            }
+
+            float svgEndMax = Math.Max(_endImage.Picture.CullRect.Width, _endImage.Picture.CullRect.Height);
+            float endScale = _pictureSize / svgEndMax;
+
+            var endMatrix = SKMatrix.MakeIdentity();
+            endMatrix.SetScaleTranslate(endScale, endScale, lastPoint.X, lastPoint.Y - _pictureSize);
+
+            using (var picturePaint = new SKPaint()
+                {
+                    ColorFilter = SKColorFilter.CreateBlendMode(
+                        InfoColor == Color.Default ? _lastImageColor : InfoColor.ToSKColor(),
+                        SKBlendMode.SrcIn)
+                })
+            {
+                canvas.DrawPicture(_endImage.Picture, ref endMatrix, picturePaint);
+            }
         }
+
+        //private void DrawLastMarker(SKCanvas canvas, SKPoint lastPoint)
+        //{
+        //    canvas.DrawCircle(lastPoint.X, lastPoint.Y, SkiaHelper.ToPixel(3), _lastMarkerPaint);
+        //}
     }
 }

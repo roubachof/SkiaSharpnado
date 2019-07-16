@@ -72,8 +72,8 @@ namespace Sample.ViewModels
 
                         double maxSpeed = lap.MaximumSpeed * 3.6;
                         EffortComputer effortComputer = lap.AverageHeartRateBpm != null
-                            ? RunningEffortComputer.ByHeartBeat
-                            : RunningEffortComputer.BySpeed.OverrideDefaultMaxValue(maxSpeed);
+                            ? HumanEffortComputer.ByHeartBeat
+                            : HumanEffortComputer.BySpeed.OverrideDefaultMaxValue(maxSpeed);
 
                         var dispersion = new SortedDictionary<double, IDispersionSpan>();
                         Trackpoint previousPoint = lap.Track[0];

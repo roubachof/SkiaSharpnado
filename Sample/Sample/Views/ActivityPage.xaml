@@ -30,7 +30,7 @@
 
     <ContentPage.Content>
         <customViews:TaskLoaderView ViewModelLoader="{Binding Loader}" 
-                                    AccentColor="{StaticResource PrimaryColor}" 
+                                    AccentColor="{StaticResource SecondaryColor}" 
                                     TextColor="{StaticResource OnSurfaceColor}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -38,7 +38,7 @@
                     <RowDefinition Height="200"/>
                 </Grid.RowDefinitions>
 
-                <map:SessionMap x:Name="SessionMap" SessionMapInfo="{Binding Loader.Result}" />
+                <map:SessionMap x:Name="SessionMap" PathThickness="4" SessionMapInfo="{Binding Loader.Result}" />
 
                 <Grid Row="1" RowSpacing="{StaticResource SpacingMedium}" ColumnSpacing="{StaticResource SpacingMedium}"
                       Padding="{StaticResource ThicknessMedium}"

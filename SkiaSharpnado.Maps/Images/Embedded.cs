@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Sample.Domain
+namespace SkiaSharpnado.Maps.Images
 {
     internal static class Embedded
     {
@@ -19,6 +18,7 @@ namespace Sample.Domain
 
         public static Stream Load(string name)
         {
+            name = $".Images.{name}";
             name = Resources.FirstOrDefault(n => n.EndsWith(name));
 
             Stream stream = null;
@@ -28,24 +28,6 @@ namespace Sample.Domain
             }
 
             return stream;
-        }
-
-        public static Stream LoadWithFullName(string resourceFullName)
-        {
-            return Assembly.GetManifestResourceStream(resourceFullName);;
-        }
-
-        public static IEnumerable<string> GetAllDomainResources()
-        {
-            const string name = "Domain.Resources";
-            return Resources.Where(n => n.Contains(name)).OrderBy(n => n);
-        }
-
-        public static bool Exists(string name)
-        {
-            name = $".Resources.{name}";
-            name = Resources.FirstOrDefault(n => n.EndsWith(name));
-            return name != null;
         }
     }
 }

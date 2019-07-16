@@ -74,6 +74,7 @@
         public const string BezierCurve = "\uf55b";
         public const string Bible = "\uf647";
         public const string Bicycle = "\uf206";
+        public const string Biking = "\uf84a";
         public const string Binoculars = "\uf1e5";
         public const string Biohazard = "\uf780";
         public const string BirthdayCake = "\uf1fd";

@@ -9,18 +9,9 @@ namespace Sample.Domain
 {
     public class TcxActivityService : ITcxActivityService
     {
-        private const string RuntasticFileFormat = "runtastic_{0}.tcx";
-        private const string RuntasticFileDateFormat = "runtastic_{0:yyyyMMdd_HHmm}.tcx";
-        private const string RuntasticDateFormat = "yyyyMMdd_HHmm";
+        private const string RuntasticFileFormat = "{0}.tcx";
 
         private readonly List<Activity> _activities = new List<Activity>();
-
-        private static readonly string[] Ids = new string[]
-            {
-                "20190616_0854",
-                "20190412_1605",
-                "20181112_2350",
-            };
 
         public async Task<List<Activity>> GetActivitiesAsync()
         {
@@ -31,13 +22,14 @@ namespace Sample.Domain
 
             foreach (var activityResourceName in Embedded.GetAllDomainResources())
             {
-                _activities.Add(await GetActivityByResourceName(activityResourceName));
-            }
+                var activity = await GetActivityByResourceName(activityResourceName);
 
-            //foreach (string id in Ids)
-            //{
-            //    _activities.Add(await GetActivityAsync(id));
-            //}
+                string[] split = activityResourceName.Split('.');
+                string athlete = split[split.Length - 2].Split('_')[1];
+
+                activity.Notes = athlete.ToUpper();
+                _activities.Add(activity);
+            }
 
             return _activities;
         }

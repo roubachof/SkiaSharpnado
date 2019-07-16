@@ -10,7 +10,6 @@ using Sample.Localization;
 
 using Sharpnado.Presentation.Forms.ViewModels;
 
-using SkiaSharpnado.Maps.Domain;
 using SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap;
 using SkiaSharpnado.ViewModels;
 
@@ -54,8 +53,8 @@ namespace Sample.ViewModels
             }
 
             var activityPoints = activity.ToActivityPoints();
-
-            Header = new ActivityHeaderViewModel(activity.ToActivityHeader(), new List<IDispersionSpan>());
+            var activityHeader = activity.ToActivityHeader();
+            Header = new ActivityHeaderViewModel(activityHeader, new List<IDispersionSpan>());
             RaisePropertyChanged(nameof(Header));
 
             double maxSpeed = activity.Lap[0].MaximumSpeed * 3.6f;
@@ -66,7 +65,7 @@ namespace Sample.ViewModels
                     return null;
                 }
 
-                return RunningEffortComputer.BySpeed.GetColor(point.Speed, maxSpeed);
+                return HumanEffortComputer.BySpeed.GetColor(point.Speed, maxSpeed);
             }
 
             Color? SelectColorByHeartRate(ISessionDisplayablePoint point)
@@ -76,7 +75,31 @@ namespace Sample.ViewModels
                     return null;
                 }
 
-                return RunningEffortComputer.ByHeartBeat.GetColor(point.HeartRate);
+                return HumanEffortComputer.ByHeartBeat.GetColor(point.HeartRate);
+            }
+
+            int markerInterval = 100;
+            int distanceInternal = 100;
+            int totalDistance = activityHeader.DistanceInMeters;
+            if (totalDistance >= 100000)
+            {
+                markerInterval = 5000;
+                distanceInternal = 10000;
+            }
+            else if (totalDistance >= 50000)
+            {
+                markerInterval = 2000;
+                distanceInternal = 5000;
+            }
+            else if (totalDistance >= 10000)
+            {
+                markerInterval = 1000;
+                distanceInternal = 2000;
+            }
+            else if (totalDistance >= 5000)
+            {
+                markerInterval = 500;
+                distanceInternal = 1000;
             }
 
             if (Header.AverageHeartRate.HasValue)
@@ -84,8 +107,8 @@ namespace Sample.ViewModels
                 return SessionMapInfo.Create(
                     activityPoints,
                     SelectColorByHeartRate,
-                    1000,
-                    1000);
+                    markerInterval,
+                    distanceInternal);
             }
 
             return SessionMapInfo.Create(

@@ -41,7 +41,7 @@
 
             <Label Grid.Row="1" Grid.Column="1" 
                    Style="{StaticResource MainIndicatorsValue}" 
-                   Text="{Binding CaloriesBurnt}" />
+                   Text="{Binding DisplayableCaloriesBurnt}" />
         </Grid>
     </ContentView.Content>
 </ContentView>

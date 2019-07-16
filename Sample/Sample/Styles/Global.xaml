@@ -2,7 +2,8 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms">
+                    xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms"
+                    xmlns:sample="clr-namespace:Sample;assembly=Sample">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Colors.xaml"/>
@@ -32,6 +33,8 @@
     <Style x:Key="MainIndicatorsValue" BasedOn="{StaticResource TextHuge}" TargetType="Label">
         <Setter Property="VerticalTextAlignment" Value="Start" />
     </Style>
+
+    <sample:SportToIconConverter x:Key="SportToIconConverter" />
 
     <!--<Style TargetType="customViews:TaskLoaderView">
         <Setter Property="AccentColor" Value="{StaticResource PrimaryColor}"/>

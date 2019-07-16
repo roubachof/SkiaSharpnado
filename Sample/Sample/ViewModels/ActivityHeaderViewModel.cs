@@ -12,6 +12,8 @@ namespace Sample.ViewModels
     {
         public ActivityHeaderViewModel(ActivityHeader header, List<IDispersionSpan> dispersion)
         {
+            AthleteName = header.AthleteName;
+            Sport = header.Sport;
             Dispersion = dispersion;
             LastPointTime = header.LastPointTime;
             Duration = header.Duration;
@@ -21,6 +23,7 @@ namespace Sample.ViewModels
             MaximumHeartRate = header.MaximumHeartRate;
             MaximumSpeed = header.MaximumSpeed;
 
+            DisplayableCaloriesBurnt = CaloriesBurnt == 0 ? AppResources.NoValue : CaloriesBurnt.ToString();
             DisplayableStartTime = LastPointTime.ToLocalTime().ToSmartShortDate();
             DisplayableDistance = (DistanceInMeters / 1000f).ToString("0.00");
             DisplayableTimeSpan = $"{Duration:h\\:mm}";
@@ -28,6 +31,10 @@ namespace Sample.ViewModels
             DisplayableAverageHeartRate =
                 AverageHeartRate == null ? AppResources.NoValue : AverageHeartRate.Value.ToString();
         }
+
+        public string AthleteName { get; }
+
+        public Sport Sport { get; }
 
         public string Id => LastPointTime.ToString("yyyyMMdd_HHmm");
 
@@ -46,6 +53,8 @@ namespace Sample.ViewModels
         public string DisplayableTimeSpan { get; }
 
         public int CaloriesBurnt { get; }
+
+        public string DisplayableCaloriesBurnt { get; }
 
         public int? AverageHeartRate { get; }
 

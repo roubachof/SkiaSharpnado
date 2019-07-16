@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 using Prism;
 using Prism.DryIoc;
@@ -8,8 +7,6 @@ using Prism.Ioc;
 using Sample.Domain;
 using Sample.ViewModels;
 using Sample.Views;
-
-using Sharpnado.Infrastructure.Tasks;
 
 using SkiaSharpnado.SkiaSharp;
 

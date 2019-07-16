@@ -14,6 +14,10 @@ namespace Sample.Domain
         {
             var lap = activity.Lap[0];
             return new ActivityHeader(
+                activity.Notes,
+                activity.Sport == TcxTools.Sport.Running
+                    ? SkiaSharpnado.Maps.Domain.Sport.Running
+                    : SkiaSharpnado.Maps.Domain.Sport.Biking,
                 lap.Track.Last().Time,
                 TimeSpan.FromSeconds(lap.TotalTimeSeconds),
                 (int)lap.DistanceMeters,

@@ -2,9 +2,18 @@
 
 namespace SkiaSharpnado.Maps.Domain
 {
+    public enum Sport
+    {
+        Running,
+        Biking,
+        Other,
+    }
+
     public class ActivityHeader
     {
         public ActivityHeader(
+            string athleteName,
+            Sport sport,
             DateTime lastPointTime,
             TimeSpan duration,
             int distanceInMeters,
@@ -13,6 +22,8 @@ namespace SkiaSharpnado.Maps.Domain
             int? maximumHeartRate,
             double maximumSpeed)
         {
+            AthleteName = athleteName;
+            Sport = sport;
             LastPointTime = lastPointTime;
             Duration = duration;
             DistanceInMeters = distanceInMeters;
@@ -23,6 +34,10 @@ namespace SkiaSharpnado.Maps.Domain
         }
 
         public string Id => LastPointTime.ToString("yyyyMMdd_HHmm");
+
+        public string AthleteName { get; }
+
+        public Sport Sport { get; }
 
         public DateTime LastPointTime { get; }
 

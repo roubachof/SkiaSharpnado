@@ -11,9 +11,9 @@
     <OnPlatform x:Key="FontAwesome"
                 x:TypeArguments="x:String">
         <OnPlatform.Platforms>
-            <On Platform="Android" Value="fa-solid-900.ttf#Font Awesome 5 Free" />
+            <On Platform="Android" Value="Font-Awesome-5-Free-Solid-900.otf#Font Awesome 5 Free" />
             <On Platform="iOS" Value="Font Awesome 5 Free" />
-            <On Platform="UWP" Value="Assets/Fonts/fa-solid-900.ttf#Font Awesome 5 Free Solid" />
+            <On Platform="UWP" Value="Assets/Fonts/fa.otf#Font Awesome 5 Free" />
         </OnPlatform.Platforms>
     </OnPlatform>
 
@@ -40,6 +40,12 @@
     <FontImageSource x:Key="IconRunSmall"
                      FontFamily="{StaticResource FontAwesome}"
                      Glyph="{x:Static styles:IconFont.Running}"
+                     Size="{StaticResource SizeSmallIcon}"
+                     Color="{StaticResource SecondaryColor}" />
+
+    <FontImageSource x:Key="IconBikeSmall"
+                     FontFamily="{StaticResource FontAwesome}"
+                     Glyph="{x:Static styles:IconFont.Biking}"
                      Size="{StaticResource SizeSmallIcon}"
                      Color="{StaticResource SecondaryColor}" />
 

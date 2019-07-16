@@ -160,16 +160,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Fonts\fa-solid-900.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\Fonts\fontawesome.otf" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Sample\Sample.csproj">
       <Project>{3bfbb96c-6468-4e90-b338-ed2594c73c1e}</Project>
       <Name>Sample</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Fonts\fa.otf" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
