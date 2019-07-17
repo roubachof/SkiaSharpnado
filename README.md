@@ -1,5 +1,7 @@
 # SkiaSharpnado: SkiaSharp components and case studies for Xamarin.Forms
 
+![Run Away! Banner](__Docs__/skiasharpnado_1000.png)
+
 If you want real details on this, please see my blog post on Sharpnado: https://www.sharpnado.com/run-away-app
 
 For now, you will find two netstandard projects ready to be reused:
