@@ -14,6 +14,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
 using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
+using System.Runtime.CompilerServices;
 
 namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 {
@@ -29,8 +30,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             nameof(MaxTime),
             typeof(TimeSpan),
             typeof(SessionMap),
-            defaultValue: TimeSpan.MaxValue,
-            propertyChanged: InvalidateSurface);
+            defaultValue: TimeSpan.MaxValue);
 
         public static readonly BindableProperty PathThicknessProperty = BindableProperty.Create(
             nameof(PathThickness),
@@ -55,6 +55,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
         private bool _isCameraInitialized;
         private bool _isMapLayoutOccured;
         private bool _isOverlayDrawn;
+
+        private bool _forceInvalidation;
 
         private CameraPosition _movingCameraPosition;
 
@@ -137,6 +139,17 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
         private static void InvalidateSurface(BindableObject bindable, object oldvalue, object newvalue)
         {
             ((SessionMap)bindable).MapOverlay.InvalidateSurface();
+        }
+
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+
+            if (propertyName == nameof(MaxTime))
+            {
+                _forceInvalidation = true;
+                MapOverlay.InvalidateSurface();
+            }
         }
 
         private void OnLayoutChanged(object sender, EventArgs e)
@@ -399,7 +412,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             var bottomRightPoint = _positionConverter[_bottomRightPosition].ToSKPoint();
             double squaredDistance = SKPoint.DistanceSquared(topLeftPoint, bottomRightPoint);
 
-            if (_previousCenter == centerPoint && _previousTopLeftBottomRightSquareDistance == squaredDistance)
+            if (!_forceInvalidation && _previousCenter == centerPoint && _previousTopLeftBottomRightSquareDistance == squaredDistance)
             {
                 // Display view didn't changed
                 Debug.WriteLine($"RETURNING: Display view didn't changed");
@@ -423,6 +436,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             SKPoint previousPoint = SKPoint.Empty;
             SKColor previousColor = SKColor.Empty;
 
+            int linesDrawnCount = 0;
             for (int index = 0; index < sessionPoints.Count; index++)
             {
                 ISessionDisplayablePoint sessionPoint = sessionPoints[index];
@@ -436,9 +450,17 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                     ? _positionConverter[sessionPoint.Position].ToSKPoint()
                     : SKPoint.Empty;
 
-                SKColor pointColor = sessionPoint.MapPointColor.ToSKColor();
+                var pointColor = sessionPoint.MapPointColor.ToSKColor();
 
-                if (previousPoint != SKPoint.Empty && pathPoint != SKPoint.Empty)
+                // we won't trace line between points with a distance < 1 dp: this is silly
+                bool isDistanceEnough = Math.Abs(pathPoint.X - previousPoint.X) > SkiaHelper.ToPixel(4)
+                    || Math.Abs(pathPoint.Y - previousPoint.Y) > SkiaHelper.ToPixel(4);
+
+                //bool isDistanceEnough = true;
+
+                if (previousPoint != SKPoint.Empty 
+                    && pathPoint != SKPoint.Empty 
+                    && isDistanceEnough)
                 {
                     using (var shader = SKShader.CreateLinearGradient(
                         previousPoint,
@@ -453,6 +475,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
                         _gradientPathPaint.Shader = null;
                     }
+
+                    linesDrawnCount++;
                 }
 
                 if (sessionPoint.HasMarker && previousPoint != SKPoint.Empty)
@@ -485,9 +509,14 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                     _textDistanceLayer.IncrementIndex();
                 }
 
-                previousPoint = pathPoint;
-                previousColor = pointColor;
+                if (isDistanceEnough)
+                {
+                    previousPoint = pathPoint;
+                    previousColor = pointColor;
+                }
             }
+
+            Debug.WriteLine($"MAP: {linesDrawnCount} lines drawn");
 
             _markerLayer.UpdateMaxTime(MaxTime);
             _markerLayer.Draw(canvas, _markerPaint);
@@ -513,6 +542,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             pictureRecorder.Dispose();
 
             _movingCameraPosition = null;
+
+            _forceInvalidation = false;
 
             stopWatch.Stop();
             Debug.WriteLine($"END OF => MapOnPaintSurface ({stopWatch.Elapsed})");
@@ -541,6 +572,11 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 })
             {
                 canvas.DrawPicture(_startImage.Picture, ref startMatrix, picturePaint);
+            }
+
+            if (lastSessionPoint.Time - MaxTime > TimeSpan.FromSeconds(20))
+            {
+                return;
             }
 
             float svgEndMax = Math.Max(_endImage.Picture.CullRect.Width, _endImage.Picture.CullRect.Height);

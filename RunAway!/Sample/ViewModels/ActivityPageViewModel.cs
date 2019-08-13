@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Prism.Navigation;
@@ -21,6 +22,11 @@ namespace Sample.ViewModels
     {
         private readonly ITcxActivityService _activityService;
 
+        private TimeSpan _currentTime;
+        private string _currentHeartRate;
+        private string _currentSpeed;
+        private string _currentAltitude;
+
         public ActivityPageViewModel(INavigationService navigationService, ITcxActivityService activityService)
             : base(navigationService)
         {
@@ -31,7 +37,37 @@ namespace Sample.ViewModels
 
         public ViewModelLoader<SessionMapInfo> Loader { get; }
 
+        public SessionGraphInfo GraphInfo { get; private set; }
+
         public ActivityHeaderViewModel Header { get; private set; }
+
+        public TimeSpan CurrentTime
+        {
+            get => _currentTime;
+            set
+            {
+                SetProperty(ref _currentTime, value);
+                OnCurrentTimeChanged();
+            }
+        }
+
+        public string CurrentHeartRate
+        {
+            get => _currentHeartRate;
+            set => SetProperty(ref _currentHeartRate, value);
+        }
+
+        public string CurrentSpeed
+        {
+            get => _currentSpeed;
+            set => SetProperty(ref _currentSpeed, value);
+        }
+
+        public string CurrentAltitude
+        {
+            get => _currentAltitude;
+            set => SetProperty(ref _currentAltitude, value);
+        }
 
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
@@ -41,6 +77,20 @@ namespace Sample.ViewModels
             Title = date.ToLongDateString();
 
             Loader.Load(() => LoadAsync(activityId));
+        }
+
+        private void OnCurrentTimeChanged()
+        {
+            if (GraphInfo == null)
+            {
+                return;
+            }
+
+            var currentPoint = GraphInfo.SessionPoints.First(p => p.Time >= CurrentTime);
+
+            CurrentHeartRate = currentPoint.HeartRate?.ToString() ?? AppResources.NoValue;
+            CurrentSpeed = currentPoint.Speed?.ToString("0.0") ?? AppResources.NoValue;
+            CurrentAltitude = currentPoint.Altitude?.ToString() ?? AppResources.NoValue;
         }
 
         private async Task<SessionMapInfo> LoadAsync(string activityId)
@@ -102,20 +152,28 @@ namespace Sample.ViewModels
                 distanceInternal = 1000;
             }
 
+            SessionMapInfo mapInfo;
             if (Header.AverageHeartRate.HasValue)
             {
-                return SessionMapInfo.Create(
+                mapInfo = SessionMapInfo.Create(
                     activityPoints,
                     SelectColorByHeartRate,
                     markerInterval,
                     distanceInternal);
             }
+            else
+            {
+                mapInfo = SessionMapInfo.Create(
+                    activityPoints,
+                    SelectColorBySpeed,
+                    1000,
+                    1000);
+            }
 
-            return SessionMapInfo.Create(
-                activityPoints,
-                SelectColorBySpeed,
-                1000,
-                1000);
+            GraphInfo = SessionGraphInfo.CreateSessionGraphInfo(mapInfo.SessionPoints);
+            RaisePropertyChanged(nameof(GraphInfo));
+
+            return mapInfo;
         }
     }
 }

@@ -42,6 +42,12 @@
     <Color x:Key="ColorEffortAnaerobic">#ff7b00</Color>
     <Color x:Key="ColorEffortMax">#de0a1c</Color>
 
+    <Color x:Key="ColorGraphHeartRate">#FF0266</Color>
+    <Color x:Key="ColorGraphSpeed">#DA08FF</Color>
+    <Color x:Key="ColorGraphAltitude">#02FF70</Color>
+    <Color x:Key="ColorGraphAltitudeSurface">#3002FF70</Color>
+
+    <Color x:Key="ColorGraphOverlay">#20FFFFFF</Color>
 
     <Color x:Key="ColorEffortSpeedMin">#ffee58</Color>
 

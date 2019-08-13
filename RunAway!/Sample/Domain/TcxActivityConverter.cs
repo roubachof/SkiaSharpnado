@@ -13,6 +13,11 @@ namespace Sample.Domain
         public static ActivityHeader ToActivityHeader(this Activity activity)
         {
             var lap = activity.Lap[0];
+
+            var firstPoint = lap.Track[0];
+            var tpx = firstPoint.Extensions.Any.FirstOrDefault();
+            bool hasSpeed = tpx != null && tpx.InnerXml.Contains("Speed");
+
             return new ActivityHeader(
                 activity.Notes,
                 activity.Sport == TcxTools.Sport.Running
@@ -24,7 +29,8 @@ namespace Sample.Domain
                 lap.Calories,
                 lap.AverageHeartRateBpm?.Value,
                 lap.MaximumHeartRateBpm?.Value,
-                lap.MaximumSpeed);
+                lap.MaximumSpeed,
+                hasSpeed);
         }
 
         public static List<ActivityPoint> ToActivityPoints(this Activity activity)
@@ -33,6 +39,14 @@ namespace Sample.Domain
             var track = activity.Lap[0].Track;
             foreach (var point in track)
             {
+                double? speed = null;
+                var tpx = point.Extensions.Any.FirstOrDefault();
+                bool hasSpeed = tpx != null && tpx.InnerXml.Contains("Speed");
+                if (hasSpeed)
+                {
+                    speed = double.Parse(tpx.InnerText) * 3.6;
+                }
+
                 result.Add(
                     new ActivityPoint(
                         point.Time,
@@ -41,7 +55,8 @@ namespace Sample.Domain
                             ? LatLong.Empty
                             : new LatLong(point.Position.LatitudeDegrees, point.Position.LongitudeDegrees),
                         (int)point.DistanceMeters,
-                        (int)point.AltitudeMeters));
+                        (int)point.AltitudeMeters,
+                        speed));
             }
 
             return result;

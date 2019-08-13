@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.ComponentModel;
 using Prism.Navigation;
-
+using Sample.ViewModels;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
+using SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap;
+using SkiaSharpnado.SkiaSharp;
+using TouchTracking;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

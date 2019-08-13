@@ -71,8 +71,9 @@ namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
 
                 TimeSpan elapsedTime = point.TimeStamp - startTime;
 
-                double speed = 0;
-                if (previousPoint != null 
+                double? speed = point.Speed;
+                if (speed == null 
+                    && previousPoint != null 
                     && previousPoint.HasPosition 
                     && previousPoint.Distance.HasValue
                     && point.Position != LatLong.Empty 

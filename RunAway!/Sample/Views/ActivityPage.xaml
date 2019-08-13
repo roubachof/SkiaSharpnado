@@ -6,11 +6,9 @@
              xmlns:map="clr-namespace:SkiaSharpnado.Maps.Presentation.Views.SessionMap;assembly=SkiaSharpnado.Maps"
              xmlns:viewModels="clr-namespace:Sample.ViewModels;assembly=Sample"
              xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms"
-             xmlns:loc="clr-namespace:Sample.Localization;assembly=Sample"
-             xmlns:forms="clr-namespace:TouchTracking.Forms;assembly=TouchTracking.Forms"
-             xmlns:forms1="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             xmlns:views="clr-namespace:Sample.Views;assembly=Sample"
+             xmlns:graph="clr-namespace:Sample.CustomViews;assembly=Sample"
+             xmlns:localization="clr-namespace:Sample.Localization;assembly=Sample"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:ActivityPageViewModel}"
              Title="{Binding Title}"
@@ -35,12 +33,69 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="200"/>
                 </Grid.RowDefinitions>
 
-                <map:SessionMap x:Name="SessionMap" PathThickness="4" SessionMapInfo="{Binding Loader.Result}" />
+                <map:SessionMap x:Name="SessionMap" 
+                                PathThickness="4" 
+                                SessionMapInfo="{Binding Loader.Result}"
+                                MaxTime="{Binding Source={x:Reference GraphView}, Path=CurrentCursorTime, Mode=TwoWay}"/>
 
-                <Grid Row="1" RowSpacing="{StaticResource SpacingMedium}" ColumnSpacing="{StaticResource SpacingMedium}"
+                <Frame Grid.Row="1" 
+                       CornerRadius="6" 
+                       Padding="15, 10"
+                       HasShadow="False"
+                       BackgroundColor="{StaticResource DarkElevation2dp}"
+                       Margin="15, 15, 15, 7">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="3*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="2" 
+                               Style="{StaticResource MainIndicatorsLabel}" 
+                               Text="{localization:Translate Heart}" />
+
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Style="{StaticResource MainIndicatorsLabel}" 
+                               Text="{localization:Translate Speed}" />
+
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Style="{StaticResource MainIndicatorsLabel}" 
+                               Text="{localization:Translate Altitude}" />
+
+                        <Label Grid.Row="1" Grid.Column="2" 
+                               Style="{StaticResource MainIndicatorsValue}" 
+                               Text="{Binding CurrentHeartRate}" />
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Style="{StaticResource MainIndicatorsValue}" 
+                               Text="{Binding CurrentSpeed}" />
+
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Style="{StaticResource MainIndicatorsValue}" 
+                               Text="{Binding CurrentAltitude}" />
+                    </Grid>
+                </Frame>
+                <Frame Grid.Row="2" 
+                       CornerRadius="6" 
+                       Margin="15, 8, 15, 15"
+                       Padding="0"
+                       HasShadow="False"
+                       BackgroundColor="{StaticResource DarkElevation2dp}">
+                    <graph:SessionGraphView x:Name="GraphView"
+                                            CurrentCursorTime="{Binding CurrentTime, Mode=OneWayToSource}"
+                                            SessionGraphInfo="{Binding GraphInfo}"/>
+                </Frame>
+
+                    <!--<Grid Row="1" RowSpacing="{StaticResource SpacingMedium}" ColumnSpacing="{StaticResource SpacingMedium}"
                       Padding="{StaticResource ThicknessMedium}"
                       BindingContext="{Binding Header}">
                     <Grid.RowDefinitions>
@@ -118,7 +173,7 @@
                         </Grid>
                     </Frame>
 
-                </Grid>
+                </Grid>-->
 
                 <!--<Grid Row="1">
                     <forms1:SKCanvasView x:Name="Graph"

@@ -20,7 +20,8 @@ namespace SkiaSharpnado.Maps.Domain
             int caloriesBurnt,
             int? averageHeartRate,
             int? maximumHeartRate,
-            double maximumSpeed)
+            double maximumSpeed,
+            bool hasSpeed)
         {
             AthleteName = athleteName;
             Sport = sport;
@@ -31,6 +32,7 @@ namespace SkiaSharpnado.Maps.Domain
             AverageHeartRate = averageHeartRate;
             MaximumHeartRate = maximumHeartRate;
             MaximumSpeed = maximumSpeed;
+            HasSpeed = hasSpeed;
         }
 
         public string Id => LastPointTime.ToString("yyyyMMdd_HHmm");
@@ -52,5 +54,7 @@ namespace SkiaSharpnado.Maps.Domain
         public int? MaximumHeartRate { get; }
 
         public double MaximumSpeed { get; }
+
+        public bool HasSpeed { get; }
     }
 }

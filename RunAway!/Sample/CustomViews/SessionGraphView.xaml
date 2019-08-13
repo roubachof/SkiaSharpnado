@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:forms1="clr-namespace:TouchTracking.Forms;assembly=TouchTracking.Forms"
+             mc:Ignorable="d"
+             x:Class="Sample.CustomViews.SessionGraphView">
+  <ContentView.Content>
+      <Grid>
+          <forms:SKCanvasView x:Name="Graph"
+                              PaintSurface="GraphOnPaintSurface" />
+          <Grid.Effects>
+              <forms1:TouchEffect Capture="True"
+                                   TouchAction="OnTouchEffectAction" />
+          </Grid.Effects>
+      </Grid>
+  </ContentView.Content>
+</ContentView>
