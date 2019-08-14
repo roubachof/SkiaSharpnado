@@ -26,6 +26,7 @@ namespace Sample.ViewModels
         private string _currentHeartRate;
         private string _currentSpeed;
         private string _currentAltitude;
+        private string _currentDistance;
 
         public ActivityPageViewModel(INavigationService navigationService, ITcxActivityService activityService)
             : base(navigationService)
@@ -69,6 +70,12 @@ namespace Sample.ViewModels
             set => SetProperty(ref _currentAltitude, value);
         }
 
+        public string CurrentDistance
+        {
+            get => _currentDistance;
+            set => SetProperty(ref _currentDistance, value);
+        }
+
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             string activityId = parameters.GetValue<string>("activityId");
@@ -91,6 +98,9 @@ namespace Sample.ViewModels
             CurrentHeartRate = currentPoint.HeartRate?.ToString() ?? AppResources.NoValue;
             CurrentSpeed = currentPoint.Speed?.ToString("0.0") ?? AppResources.NoValue;
             CurrentAltitude = currentPoint.Altitude?.ToString() ?? AppResources.NoValue;
+            CurrentDistance = currentPoint.Distance != null
+                ? (currentPoint.Distance.Value / 1000f).ToString("0.0")
+                : AppResources.NoValue;
         }
 
         private async Task<SessionMapInfo> LoadAsync(string activityId)

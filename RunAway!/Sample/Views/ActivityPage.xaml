@@ -57,29 +57,38 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
-                        <Label Grid.Row="0" Grid.Column="2" 
-                               Style="{StaticResource MainIndicatorsLabel}" 
-                               Text="{localization:Translate Heart}" />
 
                         <Label Grid.Row="0" Grid.Column="0" 
                                Style="{StaticResource MainIndicatorsLabel}" 
-                               Text="{localization:Translate Speed}" />
+                               Text="{localization:Translate Heart}" />
 
                         <Label Grid.Row="0" Grid.Column="1" 
                                Style="{StaticResource MainIndicatorsLabel}" 
-                               Text="{localization:Translate Altitude}" />
+                               Text="{localization:Translate Speed}" />
 
-                        <Label Grid.Row="1" Grid.Column="2" 
-                               Style="{StaticResource MainIndicatorsValue}" 
-                               Text="{Binding CurrentHeartRate}" />
+                        <Label Grid.Row="0" Grid.Column="2" 
+                               Style="{StaticResource MainIndicatorsLabel}" 
+                               Text="{localization:Translate DistanceKm}" />
+
+                        <Label Grid.Row="0" Grid.Column="3" 
+                               Style="{StaticResource MainIndicatorsLabel}" 
+                               Text="{localization:Translate Altitude}" />
 
                         <Label Grid.Row="1" Grid.Column="0" 
                                Style="{StaticResource MainIndicatorsValue}" 
-                               Text="{Binding CurrentSpeed}" />
+                               Text="{Binding CurrentHeartRate}" />
 
                         <Label Grid.Row="1" Grid.Column="1" 
+                               Style="{StaticResource MainIndicatorsValue}" 
+                               Text="{Binding CurrentSpeed}" />
+
+                        <Label Grid.Row="1" Grid.Column="2" 
+                               Style="{StaticResource MainIndicatorsValue}" 
+                               Text="{Binding CurrentDistance}" />
+
+                        <Label Grid.Row="1" Grid.Column="3" 
                                Style="{StaticResource MainIndicatorsValue}" 
                                Text="{Binding CurrentAltitude}" />
                     </Grid>

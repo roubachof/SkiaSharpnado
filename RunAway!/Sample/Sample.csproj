@@ -14,12 +14,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Domain\Resources\1_steven_20140705_1541.tcx" />
-    <None Remove="Domain\Resources\2_david_20190714_2042.tcx" />
-    <None Remove="Domain\Resources\3_glenn_20190715_1110.tcx" />
-    <None Remove="Domain\Resources\4_jean-marie_20190412_1605.tcx" />
-    <None Remove="Domain\Resources\5_jean-marie_20190616_0854.tcx" />
-    <None Remove="Domain\Resources\6_jean-marie_20190707_0902.tcx" />
+    <None Remove="Domain\Resources\1_dominique_20190714_0825.tcx" />
+    <None Remove="Domain\Resources\2_bart_20190615_1020.tcx" />
+    <None Remove="Domain\Resources\3_steven_20140705_1541.tcx" />
+    <None Remove="Domain\Resources\4_david_20190714_2042.tcx" />
+    <None Remove="Domain\Resources\5_glenn_20190715_1110.tcx" />
+    <None Remove="Domain\Resources\6_jean-marie_20190412_1605.tcx" />
+    <None Remove="Domain\Resources\7_jean-marie_20190616_0854.tcx" />
+    <None Remove="Domain\Resources\8_jean-marie_20190707_0902.tcx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,8 +30,6 @@
 
   <ItemGroup>
     <PackageReference Include="LiveXAML" Version="2.1.72" />
-    <PackageReference Include="Microcharts" Version="0.8.5-pre" />
-    <PackageReference Include="Microcharts.Forms" Version="0.8.5-pre" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.0.0.396" />
     <PackageReference Include="Sharpnado.Presentation.Forms" Version="1.2.0" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.0" />
@@ -46,12 +46,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Domain\Resources\1_steven_20140705_1541.tcx" />
-    <EmbeddedResource Include="Domain\Resources\3_glenn_20190715_1110.tcx" />
-    <EmbeddedResource Include="Domain\Resources\4_jean-marie_20190412_1605.tcx" />
-    <EmbeddedResource Include="Domain\Resources\5_jean-marie_20190616_0854.tcx" />
-    <EmbeddedResource Include="Domain\Resources\6_jean-marie_20190707_0902.tcx" />
-    <EmbeddedResource Include="Domain\Resources\2_david_20190714_2042.tcx" />
+    <EmbeddedResource Include="Domain\Resources\1_dominique_20190714_0825.tcx" />
+    <EmbeddedResource Include="Domain\Resources\2_bart_20190615_1020.tcx" />
+    <EmbeddedResource Include="Domain\Resources\3_steven_20140705_1541.tcx" />
+    <EmbeddedResource Include="Domain\Resources\5_glenn_20190715_1110.tcx" />
+    <EmbeddedResource Include="Domain\Resources\6_jean-marie_20190412_1605.tcx" />
+    <EmbeddedResource Include="Domain\Resources\7_jean-marie_20190616_0854.tcx" />
+    <EmbeddedResource Include="Domain\Resources\8_jean-marie_20190707_0902.tcx" />
+    <EmbeddedResource Include="Domain\Resources\4_david_20190714_2042.tcx" />
   </ItemGroup>
 
   <ItemGroup>

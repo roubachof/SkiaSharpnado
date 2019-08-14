@@ -35,7 +35,7 @@ namespace Sample.CustomViews
         private SKPaint _overlayPaint;
         private SKPaint _cursorPaint;
         private SKPaint _curvePaint;
-        private SKTypeface _mediumTypeFace;
+        private SKPaint _surfacePaint;
         private SKPaint _timeRectanglePaint;
         private SKPaint _timeTextPaint;
 
@@ -107,6 +107,12 @@ namespace Sample.CustomViews
                 IsAntialias = true,
             };
 
+            _surfacePaint = new SKPaint
+            {
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true,
+            };
+
             _timeRectanglePaint = new SKPaint
             {
                 Color = SKColors.White,
@@ -131,6 +137,9 @@ namespace Sample.CustomViews
 
             _curvePaint?.Dispose();
             _curvePaint = null;
+
+            _surfacePaint?.Dispose();
+            _surfacePaint = null;
 
             _timeRectanglePaint?.Dispose();
             _timeRectanglePaint = null;
@@ -196,7 +205,7 @@ namespace Sample.CustomViews
                 using (var shader = SKShader.CreateLinearGradient(
                     curvePath.Points[0],
                     curvePath.LastPoint,
-                    new[] { color, color.Darken() },
+                    new[] { color.Darken(), color },
                     null,
                     SKShaderTileMode.Clamp))
                 {
@@ -205,6 +214,67 @@ namespace Sample.CustomViews
                 }
             }
         }
+
+        private void DrawSurface(
+            SKCanvas canvas,
+            IReadOnlyList<ISessionDisplayablePoint> sessionPoints,
+            ValueBounds valueBounds,
+            SKColor color,
+            Func<ISessionDisplayablePoint, double?> valueGetter)
+        {
+            if (sessionPoints.Count == 0)
+            {
+                return;
+            }
+
+            double secondsPerPixel = SessionGraphInfo.TotalDurationInSeconds / Width;
+
+            _surfacePaint.Color = color;
+
+            SKPoint bottomLeft = new SKPoint(0, SkiaHelper.ToPixel(Height));
+            SKPoint bottomRight = new SKPoint(SkiaHelper.ToPixel(Width), SkiaHelper.ToPixel(Height));
+
+            using (var curvePath = new SKPath())
+            {
+                curvePath.MoveTo(bottomLeft);
+
+                double currentSeconds = 0;
+                for (int index = 0; index < sessionPoints.Count; index++)
+                {
+                    var sessionPoint = sessionPoints[index];
+
+                    var value = valueGetter(sessionPoint);
+
+                    if (sessionPoint.Time.TotalSeconds < currentSeconds)
+                    {
+                        continue;
+                    }
+
+                    curvePath.LineTo(new SKPoint(GetX(sessionPoint, SessionGraphInfo.TotalDurationInSeconds), GetY(valueBounds, value)));
+                    currentSeconds += secondsPerPixel;
+                }
+
+                if (curvePath.PointCount < 2)
+                {
+                    return;
+                }
+
+                curvePath.LineTo(bottomRight);
+                curvePath.Close();
+
+                using (var shader = SKShader.CreateLinearGradient(
+                    curvePath.Points[0],
+                    curvePath.LastPoint,
+                    new[] { color, color.Darken() },
+                    null,
+                    SKShaderTileMode.Clamp))
+                {
+                    _surfacePaint.Shader = shader;
+                    canvas.DrawPath(curvePath, _surfacePaint);
+                }
+            }
+        }
+
 
         private void GraphOnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -223,11 +293,18 @@ namespace Sample.CustomViews
 
             InitializeGraphResourcesIfNeeded();
 
-            DrawCurve(
+            //DrawCurve(
+            //    canvas,
+            //    sessionGraphInfo.SessionPoints,
+            //    sessionGraphInfo.Altitude,
+            //    AltitudeColor,
+            //    sessionPoint => sessionPoint.Altitude);
+
+            DrawSurface(
                 canvas,
                 sessionGraphInfo.SessionPoints,
                 sessionGraphInfo.Altitude,
-                AltitudeColor,
+                AltitudeSurface,
                 sessionPoint => sessionPoint.Altitude);
 
             DrawCurve(

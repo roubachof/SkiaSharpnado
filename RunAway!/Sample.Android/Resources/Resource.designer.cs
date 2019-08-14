@@ -26,7 +26,6 @@ namespace Sample.Droid
 		
 		public static void UpdateIdValues()
 		{
-			global::Microcharts.Droid.Resource.String.library_name = global::Sample.Droid.Resource.String.library_name;
 			global::Sharpnado.Presentation.Forms.Droid.Resource.Animation.abc_fade_in = global::Sample.Droid.Resource.Animation.abc_fade_in;
 			global::Sharpnado.Presentation.Forms.Droid.Resource.Animation.abc_fade_out = global::Sample.Droid.Resource.Animation.abc_fade_out;
 			global::Sharpnado.Presentation.Forms.Droid.Resource.Animation.abc_grow_fade_in_from_bottom = global::Sample.Droid.Resource.Animation.abc_grow_fade_in_from_bottom;
@@ -10312,9 +10311,6 @@ namespace Sample.Droid
 			
 			// aapt resource value: 0x7f0a0057
 			public const int hide_bottom_view_on_scroll_behavior = 2131361879;
-			
-			// aapt resource value: 0x7f0a0061
-			public const int library_name = 2131361889;
 			
 			// aapt resource value: 0x7f0a0011
 			public const int mr_button_content_description = 2131361809;
