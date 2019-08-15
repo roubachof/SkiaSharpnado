@@ -26,8 +26,15 @@ namespace Sample.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            Xamarin.FormsGoogleMaps.Init("AIzaSyBqvs9lCvVEbk7sfuht7sKVOrXt3YBAglg");
+            
+            Xamarin.FormsGoogleMaps.Init("AIzaSyB4b_bnQ-ygx90fmzLQmjC6z87iekGcd-0");
+            //Xamarin.FormsGoogleMaps.Init("AIzaSyBqvs9lCvVEbk7sfuht7sKVOrXt3YBAglg");
+
             SharpnadoInitializer.Initialize(true);
+            var _ = new TouchTracking.Forms.iOS.TouchEffect();
+
+            app.StatusBarStyle = UIStatusBarStyle.LightContent;
+
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

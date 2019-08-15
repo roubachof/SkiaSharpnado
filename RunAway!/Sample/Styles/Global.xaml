@@ -21,7 +21,7 @@
         <Setter Property="RowSpacing" Value="0" />
     </Style>
 
-    <Style TargetType="NavigationPage">
+    <Style ApplyToDerivedTypes="True" TargetType="NavigationPage">
         <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationBarColor}"/>
         <Setter Property="BarTextColor" Value="{StaticResource BarTextColor}"/>
     </Style>
