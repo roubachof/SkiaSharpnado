@@ -45,14 +45,6 @@ namespace Sample.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                // Should add UWP side assembly to rendererAssemblies
-                var rendererAssemblies = new []
-                    {
-                        typeof(Xamarin.Forms.GoogleMaps.UWP.MapRenderer).GetTypeInfo().Assembly
-                    };
-
-                Xamarin.Forms.Forms.Init(e, rendererAssemblies);
-
                 InternalLogger.EnableLogging = true;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -60,7 +52,9 @@ namespace Sample.UWP
                     //TODO: Load state from previously suspended application
                 }
 
-                Xamarin.FormsGoogleMaps.Init("uZZHK7NHcEVrgcvDeklV~fVgyPHDxXanPEls2KeJ1_Q~Aulz4feTcIflGlHHfZzky3-uKMqV0AIl3kwdK1fzyZayy85x2pQ7lVDaJy3MT3RZ");
+                Xamarin.Forms.Forms.Init(e);
+
+                Xamarin.FormsMaps.Init("uZZHK7NHcEVrgcvDeklV~fVgyPHDxXanPEls2KeJ1_Q~Aulz4feTcIflGlHHfZzky3-uKMqV0AIl3kwdK1fzyZayy85x2pQ7lVDaJy3MT3RZ");
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;

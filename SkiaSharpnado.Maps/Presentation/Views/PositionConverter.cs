@@ -4,7 +4,7 @@ using System.Diagnostics;
 using SkiaSharpnado.Maps.Domain;
 
 using Xamarin.Forms;
-using Xamarin.Forms.GoogleMaps;
+using Xamarin.Forms.Maps;
 
 namespace SkiaSharpnado.Maps.Presentation.Views
 {
@@ -46,9 +46,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views
         public Point this[LatLong location]
             => MapToolBox.LatLongToXyAtZoom(location, _zoomLevel, _pixelDensity) - new Size(_topLeftPoint.X, _topLeftPoint.Y);
 
-        public void UpdateCamera(Xamarin.Forms.GoogleMaps.Map mapRendering, Size mapSize, double pixelDensity)
+        public void UpdateCamera(Map mapRendering, Size mapSize, double pixelDensity)
         {
-            UpdateCamera(mapRendering.CameraPosition.Target.ToLatLong(), mapRendering.CameraPosition.Zoom, mapSize, pixelDensity);
+            UpdateCamera(mapRendering.Camera.Position.ToLatLong(), mapRendering.Camera.Zoom, mapSize, pixelDensity);
         }
 
         public void UpdateCamera(LatLong centerLocation, double zoomLevel, Size mapSize, double pixelDensity)
@@ -60,6 +60,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views
             _topLeftPoint = MapToolBox.LatLongToXyAtZoom(centerLocation, zoomLevel, _pixelDensity) -
                 new Size(mapSize.Width / 2, mapSize.Height / 2);
         }
+
+        public override string ToString()
+            => $"topLeft: {_topLeftPoint}, zoom: {_zoomLevel}, density: {_pixelDensity}";
     }
 
     internal static class MapToolBox

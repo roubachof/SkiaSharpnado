@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
+﻿using Foundation;
 
 using Sharpnado.Presentation.Forms.iOS;
 
@@ -27,8 +23,10 @@ namespace Sample.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             
-            Xamarin.FormsGoogleMaps.Init("AIzaSyB4b_bnQ-ygx90fmzLQmjC6z87iekGcd-0");
-            //Xamarin.FormsGoogleMaps.Init("AIzaSyBqvs9lCvVEbk7sfuht7sKVOrXt3YBAglg");
+            // Xamarin.FormsGoogleMaps.Init("AIzaSyB4b_bnQ-ygx90fmzLQmjC6z87iekGcd-0");
+            // Xamarin.FormsGoogleMaps.Init("AIzaSyBqvs9lCvVEbk7sfuht7sKVOrXt3YBAglg");
+
+            Xamarin.FormsMaps.Init();
 
             SharpnadoInitializer.Initialize(true);
             var _ = new TouchTracking.Forms.iOS.TouchEffect();

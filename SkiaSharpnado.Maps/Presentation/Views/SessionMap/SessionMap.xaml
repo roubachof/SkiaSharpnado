@@ -3,11 +3,11 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
-             xmlns:googleMaps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              x:Class="SkiaSharpnado.Maps.Presentation.Views.SessionMap.SessionMap">
     <ContentView.Content>
         <Grid RowSpacing="0">
-            <googleMaps:Map Grid.Row="0"
+            <maps:Map Grid.Row="0"
                             x:Name="GoogleMap"
                             MapType="Satellite" />
 

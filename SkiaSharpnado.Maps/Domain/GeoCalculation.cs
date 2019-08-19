@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using SkiaSharpnado.Maps.Presentation.Views;
+using Xamarin.Forms.Maps;
 
 namespace SkiaSharpnado.Maps.Domain
 {
@@ -142,6 +146,17 @@ namespace SkiaSharpnado.Maps.Domain
             double acSquare = SquareDistance(a, c);
             return RadianToDegree
                 * Math.Acos((abSquare + bcSquare - acSquare) / (2 * Math.Sqrt(abSquare) * Math.Sqrt(bcSquare)));
+        }
+
+        public static MapSpan BoundsToMapSpan(Position bottomLeft, Position topRight)
+        {
+            var center = new Position(
+                (topRight.Latitude + bottomLeft.Latitude) / 2,
+                (topRight.Longitude + bottomLeft.Longitude) / 2);
+
+            var distance = HaversineDistance(bottomLeft.ToLatLong(), topRight.ToLatLong()) * 1000;
+
+            return MapSpan.FromCenterAndRadius(center, new Distance(distance / 2));
         }
     }
 }

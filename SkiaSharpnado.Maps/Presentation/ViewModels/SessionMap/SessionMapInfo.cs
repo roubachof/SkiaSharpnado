@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using SkiaSharpnado.Maps.Domain;
 
 using Xamarin.Forms;
-using Xamarin.Forms.GoogleMaps;
+using Xamarin.Forms.Maps;
 
 namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
 {
@@ -12,11 +12,14 @@ namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
     {
         public SessionMapInfo(
             IReadOnlyList<SessionDisplayablePoint> sessionPoints,
-            Bounds region,
+            Position bottomLeft,
+            Position topRight,
             int totalDurationInSeconds)
         {
             SessionPoints = sessionPoints;
-            Region = region;
+            BottomLeft = bottomLeft;
+            TopRight = topRight;
+            Region = GeoCalculation.BoundsToMapSpan(bottomLeft, topRight);
             TotalDurationInSeconds = totalDurationInSeconds;
         }
 
@@ -105,15 +108,18 @@ namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
 
             return new SessionMapInfo(
                 sessionPoints,
-                new Bounds(
-                    new Position(bottomLatitude, leftLongitude),
-                    new Position(topLatitude, rightLongitude)),
-                previousPoint != null ? (int)previousPoint.Time.TotalSeconds : 0);
+                new Position(bottomLatitude, leftLongitude),
+                new Position(topLatitude, rightLongitude),
+                previousPoint != null ? (int) previousPoint.Time.TotalSeconds : 0);
         }
 
         public IReadOnlyList<SessionDisplayablePoint> SessionPoints { get; }
 
-        public Bounds Region { get; }
+        public MapSpan Region { get; }
+
+        public Position BottomLeft { get; }
+
+        public Position TopRight { get; }
 
         public int TotalDurationInSeconds { get; }
     }
