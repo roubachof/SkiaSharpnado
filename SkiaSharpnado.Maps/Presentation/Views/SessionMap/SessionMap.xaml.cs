@@ -14,6 +14,7 @@ using Xamarin.Forms;
 
 using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Xamarin.Forms.Maps;
 
 namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
@@ -83,6 +84,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private int _markerArrowSize;
 
+        private int _drawingCount = 0;
+
         public SessionMap()
         {
             InitializeComponent();
@@ -145,22 +148,11 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             }
         }
 
-        //private void OnLayoutChanged(object sender, EventArgs e)
-        //{
-        //    if (!_isCameraInitialized && GoogleMap.Bounds.Size != Size.Zero)
-        //    {
-        //        Debug.WriteLine($"OnLayoutChanged");
-        //        _isMapLayoutOccured = true;
-
-        //        InitializeMap();
-        //    }
-        //}
-
         private void Initialize()
         {
             Debug.WriteLine($"Initializing {SessionMapInfo.SessionPoints.Count} points");
 
-            _positionConverter = new PositionConverter(GoogleMap.Projector);
+            _positionConverter = new PositionConverter();
 
             int markerCount = SessionMapInfo.SessionPoints.Count(p => p.HasMarker);
             int textDistanceCount = SessionMapInfo.SessionPoints.Count(p => !string.IsNullOrEmpty(p.Label));
@@ -211,70 +203,30 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private void InitializeMap()
         {
-            if (SessionMapInfo != null) // && _isMapLayoutOccured && !_isCameraInitializing)
+            if (SessionMapInfo != null)
             {
                 Debug.WriteLine($"InitializeMap");
 
                 GoogleMap.MoveToRegion(SessionMapInfo.Region);
-                // _isCameraInitialized = true;
             }
         }
 
         private void GoogleMapCameraChanged(object sender, CameraChangedEventArgs e)
         {
             Debug.WriteLine($"CameraChanged");
-            _movingCameraPosition = e.Camera;
+            // _movingCameraPosition = e.Camera;
+            _movingCameraPosition = null;
 
             if (!_isCameraInitialized)
             {
                 _isCameraInitialized = true;
             }
 
-            MapOverlay.InvalidateSurface();
+            if (_drawingCount == 0)
+            {
+                MapOverlay.InvalidateSurface();
+            }
         }
-
-        //private void CameraChanged(object sender, CameraChangedEventArgs e)
-        //{
-        //    Debug.WriteLine($"CameraChanged");
-
-        //    if (!_isCameraInitialized)
-        //    {
-        //        OnMapDisplayed();
-        //        return;
-        //    }
-
-            
-        //}
-
-        //private void CameraIdled(object sender, CameraIdledEventArgs e)
-        //{
-        //    Debug.WriteLine($"CameraIdled");
-        //    OnMapDisplayed();
-        //}
-
-        //private void OnMapDisplayed()
-        //{
-        //    if (!_isCameraInitialized)
-        //    {
-        //        Debug.WriteLine($"RETURNING: !_isCameraInitialized");
-        //        GoogleMap.MoveCamera(CameraUpdateFactory.NewBounds(SessionMapInfo.Region, 20));
-        //        _isCameraInitialized = true;
-        //        _isCameraInitializing = false;
-        //        return;
-        //    }
-
-        //    _movingCameraPosition = null;
-        //    MapOverlay.InvalidateSurface();
-            
-        //    Debug.WriteLine($"END OF => OnMapDisplayed: INVALIDATING");
-        //}
-
-        //private void CameraMoving(object sender, CameraMovingEventArgs e)
-        //{
-        //    // Debug.WriteLine($"CameraMoving: INVALIDATING");
-        //    _movingCameraPosition = e.Position;
-        //    MapOverlay.InvalidateSurface();
-        //}
 
         private void InitializeMapResourcesIfNeeded()
         {
@@ -369,12 +321,15 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             SKCanvas surfaceCanvas = surface.Canvas;
 
             var stopWatch = Stopwatch.StartNew();
-            
-            // Debug.WriteLine($"MapOnPaintSurface");
 
             if (SessionMapInfo == null || !_isCameraInitialized)
             {
                 Debug.WriteLine($"RETURNING: SessionMapInfo == null || !_isCameraInitialized");
+                return;
+            }
+
+            if (_drawingCount > 0)
+            {
                 return;
             }
 
@@ -392,14 +347,6 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             }
 
             var centerPoint = _positionConverter[_centerPosition].ToSKPoint();
-            if (!_isOverlayDrawn && !info.Rect.Contains((int)centerPoint.X, (int)centerPoint.Y))
-            {
-                // Google maps hasn't finished initializing yet
-                Debug.WriteLine($"RETURNING: Google maps hasn't finished initializing yet");
-                _movingCameraPosition = null;
-                return;
-            }
-
             var topLeftPoint = _positionConverter[_topLeftPosition].ToSKPoint();
             var bottomRightPoint = _positionConverter[_bottomRightPosition].ToSKPoint();
             double squaredDistance = SKPoint.DistanceSquared(topLeftPoint, bottomRightPoint);
@@ -411,6 +358,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 _movingCameraPosition = null;
                 return;
             }
+
+            Interlocked.Increment(ref _drawingCount);
 
             _previousCenter = centerPoint;
             _previousTopLeftBottomRightSquareDistance = squaredDistance;
@@ -513,17 +462,20 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             _markerLayer.UpdateMaxTime(MaxTime);
             _markerLayer.Draw(canvas, _markerPaint);
 
-            DrawFirstAndLastMarker(
+            if (!DrawFirstAndLastMarker(
                 canvas,
                 sessionPoints.First(),
-                sessionPoints.Last());
+                sessionPoints.Last()))
+            {
+                DrawLastMarker(canvas, previousPoint);
+            }
+
+            _textDistanceLayer.UpdateMaxTime(MaxTime);
+            _textDistanceLayer.Draw(canvas, _distanceTextPaint);
 
             DrawDebugInfos(
                 canvas,
                 _positionConverter.ToString());
-
-            _textDistanceLayer.UpdateMaxTime(MaxTime);
-            _textDistanceLayer.Draw(canvas, _distanceTextPaint);
 
             _isOverlayDrawn = true;
 
@@ -543,6 +495,8 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
             stopWatch.Stop();
             Debug.WriteLine($"END OF => MapOnPaintSurface ({stopWatch.Elapsed})");
+
+            Interlocked.Decrement(ref _drawingCount);
         }
 
         private void DrawDebugInfos(SKCanvas canvas, string toString)
@@ -564,7 +518,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             }
         }
 
-        private void DrawFirstAndLastMarker(SKCanvas canvas, ISessionDisplayablePoint firstSessionPoint, ISessionDisplayablePoint lastSessionPoint)
+        private bool DrawFirstAndLastMarker(SKCanvas canvas, ISessionDisplayablePoint firstSessionPoint, ISessionDisplayablePoint lastSessionPoint)
         {
             var firstPoint = _positionConverter[firstSessionPoint.Position].ToSKPoint();
             var lastPoint = _positionConverter[lastSessionPoint.Position].ToSKPoint();
@@ -591,7 +545,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
             if (lastSessionPoint.Time - MaxTime > TimeSpan.FromSeconds(20))
             {
-                return;
+                return false;
             }
 
             float svgEndMax = Math.Max(_endImage.Picture.CullRect.Width, _endImage.Picture.CullRect.Height);
@@ -609,11 +563,13 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             {
                 canvas.DrawPicture(_endImage.Picture, ref endMatrix, picturePaint);
             }
+
+            return true;
         }
 
-        //private void DrawLastMarker(SKCanvas canvas, SKPoint lastPoint)
-        //{
-        //    canvas.DrawCircle(lastPoint.X, lastPoint.Y, SkiaHelper.ToPixel(3), _lastMarkerPaint);
-        //}
+        private void DrawLastMarker(SKCanvas canvas, SKPoint lastPoint)
+        {
+            canvas.DrawCircle(lastPoint.X, lastPoint.Y, SkiaHelper.ToPixel(3), _lastMarkerPaint);
+        }
     }
 }
