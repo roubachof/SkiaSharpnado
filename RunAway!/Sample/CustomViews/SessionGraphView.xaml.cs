@@ -453,16 +453,16 @@ namespace Sample.CustomViews
             }
 
             double minValue = valueBounds.Min;
-            float bpmMaxDelta = (float)(valueBounds.Max - minValue);
-            if (bpmMaxDelta < 1)
+            float maxDelta = (float)(valueBounds.Max - minValue);
+            if (maxDelta < 1)
             {
                 minValue = valueBounds.Max * 0.25;
-                bpmMaxDelta = (float)(valueBounds.Max - minValue);
+                maxDelta = (float)(valueBounds.Max - minValue);
             }
 
             float drawableCanvasHeight = Graph.CanvasSize.Height - 2 * SkiaHelper.ToPixel(verticalPadding);
 
-            float inversedY = drawableCanvasHeight * ((float)value.Value - (float)minValue) / bpmMaxDelta;
+            float inversedY = drawableCanvasHeight * ((float)value.Value - (float)minValue) / maxDelta;
 
             return SkiaHelper.ToPixel(verticalPadding) + Math.Abs(drawableCanvasHeight - inversedY);
         }
