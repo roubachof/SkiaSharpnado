@@ -52,14 +52,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private PositionConverter _positionConverter;
 
-        private bool _isCameraInitializing;
         private bool _isCameraInitialized;
-        private bool _isMapLayoutOccured;
-        private bool _isOverlayDrawn;
 
         private bool _forceInvalidation;
-
-        private Camera _movingCameraPosition;
 
         private LatLong _centerPosition;
         private LatLong _topLeftPosition;
@@ -213,9 +208,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private void GoogleMapCameraChanged(object sender, CameraChangedEventArgs e)
         {
-            Debug.WriteLine($"CameraChanged");
-            // _movingCameraPosition = e.Camera;
-            _movingCameraPosition = null;
+            Debug.WriteLine($"CameraChanged: pos: {e.Camera.Position.Latitude}, {e.Camera.Position.Longitude}");
 
             if (!_isCameraInitialized)
             {
@@ -333,18 +326,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 return;
             }
 
-            if (_movingCameraPosition != null)
-            {
-                _positionConverter.UpdateCamera(
-                    _movingCameraPosition.Position.ToLatLong(),
-                    _movingCameraPosition.Zoom,
-                    new Size(info.Width, info.Height),
-                    SkiaHelper.PixelPerUnit);
-            }
-            else
-            {
-                _positionConverter.UpdateCamera(GoogleMap, new Size(info.Width, info.Height), SkiaHelper.PixelPerUnit);
-            }
+            _positionConverter.UpdateCamera(GoogleMap, new Size(info.Width, info.Height), SkiaHelper.PixelPerUnit);
 
             var centerPoint = _positionConverter[_centerPosition].ToSKPoint();
             var topLeftPoint = _positionConverter[_topLeftPosition].ToSKPoint();
@@ -355,9 +337,10 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             {
                 // Display view didn't changed
                 Debug.WriteLine($"RETURNING: Display view didn't changed");
-                _movingCameraPosition = null;
                 return;
             }
+
+            Debug.WriteLine($"MapOnPaintSurface: pos: {GoogleMap.Camera.Position.Latitude}, {GoogleMap.Camera.Position.Longitude}");
 
             Interlocked.Increment(ref _drawingCount);
 
@@ -477,8 +460,6 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 canvas,
                 _positionConverter.ToString());
 
-            _isOverlayDrawn = true;
-
             ReleaseMapResources();
 
             _overlayPicture = pictureRecorder.EndRecording();
@@ -488,8 +469,6 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
             _overlayPicture.Dispose();
             pictureRecorder.Dispose();
-
-            _movingCameraPosition = null;
 
             _forceInvalidation = false;
 

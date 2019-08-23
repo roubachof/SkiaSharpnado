@@ -32,6 +32,8 @@ namespace Sample.CustomViews
         private static readonly SKColor AltitudeColor = ResourcesHelper.GetResourceColor("ColorGraphAltitude").ToSKColor();
         private static readonly SKColor AltitudeSurface = ResourcesHelper.GetResourceColor("ColorGraphAltitudeSurface").ToSKColor();
 
+        private SKPicture _curvesPicture;
+
         private SKPaint _overlayPaint;
         private SKPaint _cursorPaint;
         private SKPaint _curvePaint;
@@ -280,9 +282,7 @@ namespace Sample.CustomViews
         {
             // var info = e.RenderTarget;
             SKSurface surface = e.Surface;
-            SKCanvas canvas = surface.Canvas;
-
-            canvas.Clear();
+            SKCanvas surfaceCanvas = surface.Canvas;
 
             var sessionGraphInfo = SessionGraphInfo;
 
@@ -293,40 +293,52 @@ namespace Sample.CustomViews
 
             InitializeGraphResourcesIfNeeded();
 
-            //DrawCurve(
-            //    canvas,
-            //    sessionGraphInfo.SessionPoints,
-            //    sessionGraphInfo.Altitude,
-            //    AltitudeColor,
-            //    sessionPoint => sessionPoint.Altitude);
+            if (_curvesPicture == null)
+            {
+                var pictureRecorder = new SKPictureRecorder();
+                var canvas = pictureRecorder.BeginRecording(e.Info.Rect);
 
-            DrawSurface(
-                canvas,
-                sessionGraphInfo.SessionPoints,
-                sessionGraphInfo.Altitude,
-                AltitudeSurface,
-                sessionPoint => sessionPoint.Altitude);
+                //DrawCurve(
+                //    canvas,
+                //    sessionGraphInfo.SessionPoints,
+                //    sessionGraphInfo.Altitude,
+                //    AltitudeColor,
+                //    sessionPoint => sessionPoint.Altitude);
 
-            DrawCurve(
-                canvas,
-                sessionGraphInfo.SessionPoints,
-                sessionGraphInfo.Speed,
-                SpeedColor,
-                sessionPoint => sessionPoint.Speed);
+                DrawSurface(
+                    canvas,
+                    sessionGraphInfo.SessionPoints,
+                    sessionGraphInfo.Altitude,
+                    AltitudeSurface,
+                    sessionPoint => sessionPoint.Altitude);
 
-            DrawCurve(
-                canvas,
-                sessionGraphInfo.SessionPoints,
-                sessionGraphInfo.HeartRate,
-                BpmColor,
-                sessionPoint => sessionPoint.HeartRate);
+                DrawCurve(
+                    canvas,
+                    sessionGraphInfo.SessionPoints,
+                    sessionGraphInfo.Speed,
+                    SpeedColor,
+                    sessionPoint => sessionPoint.Speed);
+
+                DrawCurve(
+                    canvas,
+                    sessionGraphInfo.SessionPoints,
+                    sessionGraphInfo.HeartRate,
+                    BpmColor,
+                    sessionPoint => sessionPoint.HeartRate);
+
+                _curvesPicture = pictureRecorder.EndRecording();
+                pictureRecorder.Dispose();
+            }
+
+            surfaceCanvas.Clear();
+            surfaceCanvas.DrawPicture(_curvesPicture);
 
             int cursorX = TimeToPixels(CurrentCursorTime);
-            canvas.DrawRect(new SKRect(0, 0, cursorX, Graph.CanvasSize.Height), _overlayPaint);
-            canvas.DrawLine(cursorX, 0, cursorX, Graph.CanvasSize.Height, _cursorPaint);
+            surfaceCanvas.DrawRect(new SKRect(0, 0, cursorX, Graph.CanvasSize.Height), _overlayPaint);
+            surfaceCanvas.DrawLine(cursorX, 0, cursorX, Graph.CanvasSize.Height, _cursorPaint);
 
-            DrawArrows(canvas, _cursorPaint, cursorX);
-            DrawTime(canvas, cursorX);
+            DrawArrows(surfaceCanvas, _cursorPaint, cursorX);
+            DrawTime(surfaceCanvas, cursorX);
 
             ReleaseGraphResources();
         }
