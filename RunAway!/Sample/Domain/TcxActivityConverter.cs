@@ -44,7 +44,7 @@ namespace Sample.Domain
                 bool hasSpeed = tpx != null && tpx.InnerXml.Contains("Speed");
                 if (hasSpeed)
                 {
-                    speed = double.Parse(tpx.InnerText) * 3.6;
+                    speed = double.Parse(tpx.InnerText, System.Globalization.CultureInfo.InvariantCulture) * 3.6;
                 }
 
                 result.Add(

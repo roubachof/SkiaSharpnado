@@ -208,7 +208,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         private void GoogleMapCameraChanged(object sender, CameraChangedEventArgs e)
         {
-            Debug.WriteLine($"CameraChanged: pos: {e.Camera.Position.Latitude}, {e.Camera.Position.Longitude}");
+            // Debug.WriteLine($"CameraChanged: pos: {e.Camera.Position.Latitude}, {e.Camera.Position.Longitude}");
 
             if (!_isCameraInitialized)
             {
@@ -380,7 +380,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 bool isDistanceEnough = Math.Abs(pathPoint.X - previousPoint.X) > SkiaHelper.ToPixel(4)
                     || Math.Abs(pathPoint.Y - previousPoint.Y) > SkiaHelper.ToPixel(4);
 
-                //bool isDistanceEnough = true;
+                // bool isDistanceEnough = true;
 
                 if (previousPoint != SKPoint.Empty 
                     && pathPoint != SKPoint.Empty 
@@ -456,9 +456,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             _textDistanceLayer.UpdateMaxTime(MaxTime);
             _textDistanceLayer.Draw(canvas, _distanceTextPaint);
 
-            DrawDebugInfos(
-                canvas,
-                _positionConverter.ToString());
+            //DrawDebugInfos(
+            //    canvas,
+            //    _positionConverter.ToString());
 
             ReleaseMapResources();
 
