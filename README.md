@@ -2,7 +2,10 @@
 
 ![Run Away! Banner](__Docs__/skiasharpnado_1000.png)
 
-If you want real details on this, please see my blog post on Sharpnado: https://www.sharpnado.com/run-away-app
+If you want real details on this, please see my 2 parts blog post on Sharpnado: 
+
+1. https://www.sharpnado.com/run-away-app
+2. https://www.sharpnado.com/drawing-curves-with-skiasharp
 
 For now, you will find two netstandard projects ready to be reused:
 
@@ -21,9 +24,11 @@ Yes, I didn't forget **UWP** this time, even if the result is not as good as the
 
 So the activities you will see are extracted from real people running apps:
 
-* [David "Big Heart" Ortinau](https://twitter.com/davidortinau)
-* [Glenn "Motocycle" Versweyveld](https://twitter.com/Depechie)
-* [Steven "Indurain" Thewisen](https://twitter.com/devnl)
+* [David Ortinau](https://twitter.com/davidortinau)
+* [Glenn Versweyveld](https://twitter.com/Depechie)
+* [Steven Thewisen](https://twitter.com/devnl)
+* [Bart Lannoeye](https://twitter.com/bartlannoeye)
+* [Dominique Louis](https://twitter.com/SoftSavage)
 
 Thanks again to those great dedicated souls!
 
@@ -253,8 +258,168 @@ In the cas of out Run Away! app, the ```SessionMapInfo``` is built in the ```Act
 3. We specify some parameters like the number of markers and the distance label interval
 4. Then ```SessionMap.Create``` factory is called and will compute speed, color from the ```EffortComputer```, distance, etc...
 
+## Drawing curves with SkiaSharp
+
+
+I created a `SessionGraphView` which is just a `SKCanvasView` with a touchable overlay:
+
+```xml
+<ContentView.Content>
+    <Grid>
+        <forms:SKCanvasView x:Name="Graph"
+                            PaintSurface="GraphOnPaintSurface" />
+        <Grid.Effects>
+            <forms1:TouchEffect Capture="True"
+                                TouchAction="OnTouchEffectAction" />
+        </Grid.Effects>
+    </Grid>
+</ContentView.Content>
+```
+
+The touch effect comes from a well known `Xamarin.Forms` documentation on effects: https://docs.microsoft.com/en-US/xamarin/xamarin-forms/app-fundamentals/effects/touch-tracking.
+
+Luckily someone made it a nuget package: https://www.nuget.org/packages/TouchTracking.Forms/
+
+This will give us touch action like dragging.
+
+I have two `BindableProperty`:
+
+1. `SessionGraphInfoProperty`: gives all the info needed for displaying our curves
+2. `CurrentCursorTimeProperty`: is current selected time
+
+![steven curves](__Docs__/uwp_steven_curves.png)
+
+Now the interesting part is that the time cursor can be dragged around thanks to the `TouchEffect`:
+
+```csharp
+private void OnTouchEffectAction(object sender, TouchActionEventArgs args)
+{
+    if (args.Type == TouchActionType.Moved && SessionGraphInfo != null)
+    {
+        float positionX = SkiaHelper.ToPixel(args.Location.X);
+
+        CurrentCursorTime = TimeSpan.FromSeconds(
+            ComputationHelper.Clamp(
+                SessionGraphInfo.TotalDurationInSeconds * positionX / Graph.CanvasSize.Width,
+                0,
+                SessionGraphInfo.TotalDurationInSeconds));
+
+        Graph.InvalidateSurface();
+    }
+}
+```
+
+Which gives this:
+
+![dominique curves drag](__Docs__/dom_curves_indicators.gif)
+
+### Composing
+
+The indicators above the curves are not in the same views. I really love modularity and composition, so I try to make all my components pluggable between each others. The plug point is the `CurrentCursorTime` property. And the indicators are brought by the `ActivityPageViewModel`:
+
+```csharp
+public class ActivityPageViewModel : ViewModelBase
+{
+    private readonly ITcxActivityService _activityService;
+
+    private TimeSpan _currentTime;
+    private string _currentHeartRate;
+    private string _currentSpeed;
+    private string _currentAltitude;
+    private string _currentDistance;
+
+    public ActivityPageViewModel(INavigationService navigationService, ITcxActivityService activityService)
+        : base(navigationService)
+    {
+        _activityService = activityService;
+
+        Loader = new ViewModelLoader<SessionMapInfo>(emptyStateMessage: AppResources.EmptyActivityMessage);
+    }
+
+    public SessionGraphInfo GraphInfo { get; private set; }
+
+    ...
+
+    public TimeSpan CurrentTime
+    {
+        get => _currentTime;
+        set
+        {
+            SetProperty(ref _currentTime, value);
+            OnCurrentTimeChanged();
+        }
+    }
+
+    public string CurrentHeartRate
+    {
+        get => _currentHeartRate;
+        set => SetProperty(ref _currentHeartRate, value);
+    }
+
+    public string CurrentSpeed
+    {
+        get => _currentSpeed;
+        set => SetProperty(ref _currentSpeed, value);
+    }
+
+    public string CurrentAltitude
+    {
+        get => _currentAltitude;
+        set => SetProperty(ref _currentAltitude, value);
+    }
+
+    public string CurrentDistance
+    {
+        get => _currentDistance;
+        set => SetProperty(ref _currentDistance, value);
+    }
+
+    ...
+
+    private void OnCurrentTimeChanged()
+    {
+        if (GraphInfo == null)
+        {
+            return;
+        }
+
+        var currentPoint = GraphInfo.SessionPoints.First(p => p.Time >= CurrentTime);
+
+        CurrentHeartRate = currentPoint.HeartRate?.ToString() ?? AppResources.NoValue;
+        CurrentSpeed = currentPoint.Speed?.ToString("0.0") ?? AppResources.NoValue;
+        CurrentAltitude = currentPoint.Altitude?.ToString() ?? AppResources.NoValue;
+        CurrentDistance = currentPoint.Distance != null
+            ? (currentPoint.Distance.Value / 1000f).ToString("0.0")
+            : AppResources.NoValue;
+    }
+
+    ...
+}
+```
+
+In the `ActivityPage`:
+
+```xml
+<graph:SessionGraphView x:Name="GraphView"
+                        CurrentCursorTime="{Binding CurrentTime, Mode=OneWayToSource}"
+                        SessionGraphInfo="{Binding GraphInfo}"/>
+```
+
+Now, I think you saw it coming, we can plug our `SessionGraphView` to our `SessionMap`:
+
+```xml
+<map:SessionMap x:Name="SessionMap" 
+                PathThickness="4" 
+                SessionMapInfo="{Binding Loader.Result}"
+                MaxTime="{Binding Source={x:Reference GraphView}, Path=CurrentCursorTime, Mode=TwoWay}"/>
+```
+
+And...
+
+![Dom dragging time](__Docs__/dom.gif)
+
 ## Final Thanks
 
-Thanks again to David, Steven, and Glenn!
+Thanks again to David, Steven, Glenn, Bart and Dominique!
 
 Huge thanks to [Matthew Leibowitz](https://twitter.com/mattleibow) who unleashed the infinite power of ```Xamarin.Forms``` with ```SkiaSharp```.
