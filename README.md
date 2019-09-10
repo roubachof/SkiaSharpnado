@@ -7,6 +7,8 @@ If you want real details on this, please see my 2 parts blog post on Sharpnado:
 1. https://www.sharpnado.com/run-away-app
 2. https://www.sharpnado.com/drawing-curves-with-skiasharp
 
+**WARNING**: there is a pending PR in the `Xamarin.Forms` github (https://github.com/xamarin/Xamarin.Forms/pull/7260) that will add needed property and events to `Xamarin.Forms.Maps`. For now you have to **clone** my fork of `Xamarin.Forms` (https://github.com/roubachof/Xamarin.Forms) at the same level that this repo.
+
 For now, you will find two netstandard projects ready to be reused:
 
 1. ```SkiaSharpnado```
