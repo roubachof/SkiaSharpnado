@@ -16,18 +16,13 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
-    <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.1.0.555618" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3-preview.18" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1791-pre5" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="5.0.0.1791-pre5" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\SkiaSharpnado\SkiaSharpnado.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="Xamarin.Forms.Maps">
-      <HintPath>..\..\Xamarin.Forms\Xamarin.Forms.Maps\bin\Debug\netstandard2.0\Xamarin.Forms.Maps.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

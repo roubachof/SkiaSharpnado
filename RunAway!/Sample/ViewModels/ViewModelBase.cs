@@ -9,7 +9,6 @@ namespace Sample.ViewModels
 
         private string _title;
 
-
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
@@ -23,22 +22,28 @@ namespace Sample.ViewModels
 
         public virtual void OnNavigatedFrom(NavigationParameters parameters)
         {
-
         }
 
         public virtual void OnNavigatedTo(NavigationParameters parameters)
         {
-
         }
 
         public virtual void OnNavigatingTo(NavigationParameters parameters)
         {
-
         }
 
         public virtual void Destroy()
         {
+        }
 
+        public void OnNavigatedFrom(INavigationParameters parameters)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnNavigatedTo(INavigationParameters parameters)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

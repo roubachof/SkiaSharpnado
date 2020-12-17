@@ -46,10 +46,10 @@ namespace SkiaSharpnado.Maps.Presentation.Views
         public Point this[LatLong location]
             => MapToolBox.LatLongToXyAtZoom(location, _zoomLevel, _pixelDensity) - new Size(_topLeftPoint.X, _topLeftPoint.Y);
 
-        public void UpdateCamera(Map mapRendering, Size mapSize, double pixelDensity)
-        {
-            UpdateCamera(mapRendering.Camera.Position.ToLatLong(), mapRendering.Camera.Zoom, mapSize, pixelDensity);
-        }
+        //public void UpdateCamera(Map mapRendering, Size mapSize, double pixelDensity)
+        //{
+        //    UpdateCamera(mapRendering.Camera.Position.ToLatLong(), mapRendering.Camera.Zoom, mapSize, pixelDensity);
+        //}
 
         public void UpdateCamera(LatLong centerLocation, double zoomLevel, Size mapSize, double pixelDensity)
         {

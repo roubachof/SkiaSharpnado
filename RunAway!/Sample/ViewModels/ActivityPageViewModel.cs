@@ -33,10 +33,10 @@ namespace Sample.ViewModels
         {
             _activityService = activityService;
 
-            Loader = new ViewModelLoader<SessionMapInfo>(emptyStateMessage: AppResources.EmptyActivityMessage);
+            //Loader = new ViewModelLoader<SessionMapInfo>(emptyStateMessage: AppResources.EmptyActivityMessage);
         }
 
-        public ViewModelLoader<SessionMapInfo> Loader { get; }
+        //public ViewModelLoader<SessionMapInfo> Loader { get; }
 
         public SessionGraphInfo GraphInfo { get; private set; }
 
@@ -83,7 +83,7 @@ namespace Sample.ViewModels
             var date = DateTime.ParseExact(activityId, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture);
             Title = date.ToLongDateString();
 
-            Loader.Load(() => LoadAsync(activityId));
+            //Loader.Load(() => LoadAsync(activityId));
         }
 
         private void OnCurrentTimeChanged()
