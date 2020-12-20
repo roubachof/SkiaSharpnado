@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == 'Undefined'">..</SolutionDir>
     <CodeAnalysisRuleSet>$(SolutionDir)\StyleCopRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -14,5 +13,4 @@
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3-preview.18" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.1791-pre5" />
   </ItemGroup>
-
 </Project>

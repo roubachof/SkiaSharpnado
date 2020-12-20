@@ -41,6 +41,7 @@
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidLinkTool>r8</AndroidLinkTool>
+    <AndroidHttpClientHandlerType />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

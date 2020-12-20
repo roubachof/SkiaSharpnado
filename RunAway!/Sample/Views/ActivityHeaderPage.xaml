@@ -4,38 +4,49 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:localization="clr-namespace:Sample.Localization;assembly=Sample"
-             xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.Presentation.Forms"
              xmlns:viewModels="clr-namespace:Sample.ViewModels;assembly=Sample"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:views="clr-namespace:Sample.Views;assembly=Sample"
              xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              xmlns:skiaSharp="clr-namespace:SkiaSharpnado.SkiaSharp;assembly=SkiaSharpnado"
+             xmlns:customViews="clr-namespace:Sharpnado.Presentation.Forms.CustomViews;assembly=Sharpnado.TaskLoaderView"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:ActivityHeaderPageViewModel}"
              ios:Page.UseSafeArea="true"
              Title="{Binding Title}"
              x:Class="Sample.Views.ActivityHeaderPage">
-     <ContentPage.Resources>
+    <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="IndicatorsIcons" TargetType="Image">
-                <Setter Property="HorizontalOptions" Value="Start" />
-                <Setter Property="VerticalOptions" Value="Center" />
+            <Style x:Key="IndicatorsIcons"
+                   TargetType="Image">
+                <Setter Property="HorizontalOptions"
+                        Value="Start" />
+                <Setter Property="VerticalOptions"
+                        Value="Center" />
             </Style>
 
-            <Style x:Key="LabelAthlete" TargetType="Label" BasedOn="{StaticResource TextBody}">
-                <Setter Property="HorizontalTextAlignment" Value="Start" />
-                <Setter Property="VerticalOptions" Value="Center" />
+            <Style x:Key="LabelAthlete"
+                   TargetType="Label"
+                   BasedOn="{StaticResource TextBody}">
+                <Setter Property="HorizontalTextAlignment"
+                        Value="Start" />
+                <Setter Property="VerticalOptions"
+                        Value="Center" />
             </Style>
 
-            <Style x:Key="LabelTime" TargetType="Label" BasedOn="{StaticResource TextBody}">
-                <Setter Property="HorizontalTextAlignment" Value="End" />
-                <Setter Property="VerticalOptions" Value="Center" />
+            <Style x:Key="LabelTime"
+                   TargetType="Label"
+                   BasedOn="{StaticResource TextBody}">
+                <Setter Property="HorizontalTextAlignment"
+                        Value="End" />
+                <Setter Property="VerticalOptions"
+                        Value="Center" />
             </Style>
 
             <DataTemplate x:Key="ActivityHeaderTemplate">
                 <ViewCell>
-                    <Frame CornerRadius="6" 
+                    <Frame CornerRadius="6"
                            Padding="15, 10"
                            HasShadow="False"
                            BackgroundColor="{StaticResource DarkElevation2dp}"
@@ -52,21 +63,31 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Image Grid.Row="0" Grid.Column="0"
-                                   Style="{StaticResource IndicatorsIcons}" Source="{Binding Sport, Converter={StaticResource SportToIconConverter}}" />
+                            <Image Grid.Row="0"
+                                   Grid.Column="0"
+                                   Style="{StaticResource IndicatorsIcons}"
+                                   Source="{Binding Sport, Converter={StaticResource SportToIconConverter}}" />
 
-                            <Label Grid.Row="0" Grid.Column="1"
-                                   Style="{StaticResource LabelAthlete}" Text="{Binding AthleteName}"/>
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   Style="{StaticResource LabelAthlete}"
+                                   Text="{Binding AthleteName}" />
 
-                            <Label Grid.Row="0" Grid.Column="2"
-                                   Style="{StaticResource LabelTime}" Text="{Binding DisplayableStartTime}"/>
+                            <Label Grid.Row="0"
+                                   Grid.Column="2"
+                                   Style="{StaticResource LabelTime}"
+                                   Text="{Binding DisplayableStartTime}" />
 
-                            <skiaSharp:SKColorDispersionBarView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                            <skiaSharp:SKColorDispersionBarView Grid.Row="1"
+                                                                Grid.Column="0"
+                                                                Grid.ColumnSpan="3"
                                                                 Margin="0, 10"
                                                                 Dispersion="{Binding Dispersion}" />
 
-                            <views:MainIndicatorsView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0, 10, 0, 0" />
-
+                            <views:MainIndicatorsView Grid.Row="2"
+                                                      Grid.Column="0"
+                                                      Grid.ColumnSpan="3"
+                                                      Margin="0, 10, 0, 0" />
                         </Grid>
                     </Frame>
                 </ViewCell>
@@ -75,19 +96,20 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <customViews:TaskLoaderView ViewModelLoader="{Binding Loader}" 
-                                    AccentColor="{StaticResource SecondaryColor}" 
-                                    TextColor="{StaticResource OnSurfaceColor}" Padding="0, 10">
-            <ListView x:Name="ListView" 
+        <customViews:TaskLoaderView TaskLoaderNotifier="{Binding Loader}"
+                                    AccentColor="{StaticResource SecondaryColor}"
+                                    TextColor="{StaticResource OnSurfaceColor}"
+                                    Padding="0, 10">
+            <ListView x:Name="ListView"
                       ItemTapped="ListViewOnItemTapped"
-                      ItemTemplate="{StaticResource ActivityHeaderTemplate}" 
+                      ItemTemplate="{StaticResource ActivityHeaderTemplate}"
                       ItemsSource="{Binding Loader.Result}"
                       BackgroundColor="Transparent"
                       SeparatorVisibility="None"
                       Margin="0, -5"
                       RowHeight="150">
                 <ListView.Behaviors>
-                    <behaviors:EventToCommandBehavior EventName="ItemTapped" 
+                    <behaviors:EventToCommandBehavior EventName="ItemTapped"
                                                       Command="{Binding ActivityTappedCommand}"
                                                       EventArgsParameterPath="Item" />
                 </ListView.Behaviors>
