@@ -82,7 +82,7 @@ namespace Sample.ViewModels
             var date = DateTime.ParseExact(activityId, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture);
             Title = date.ToLongDateString();
 
-            //Loader.Load(() => LoadAsync(activityId));
+            Loader.Load(() => LoadAsync(activityId));
         }
 
         private void OnCurrentTimeChanged()
