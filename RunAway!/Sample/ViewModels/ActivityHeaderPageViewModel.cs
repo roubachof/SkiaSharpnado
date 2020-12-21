@@ -37,7 +37,7 @@ namespace Sample.ViewModels
 
         public TaskLoaderNotifier<List<ActivityHeaderViewModel>> Loader { get; }
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             Title = AppResources.ActivityHeaderPageTitle;
 

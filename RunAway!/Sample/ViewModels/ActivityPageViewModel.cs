@@ -75,7 +75,7 @@ namespace Sample.ViewModels
             set => SetProperty(ref _currentDistance, value);
         }
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             string activityId = parameters.GetValue<string>("activityId");
 
