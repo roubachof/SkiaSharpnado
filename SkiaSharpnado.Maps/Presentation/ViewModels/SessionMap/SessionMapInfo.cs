@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using SkiaSharpnado.Maps.Domain;
 
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
 {
@@ -75,12 +75,12 @@ namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
                 TimeSpan elapsedTime = point.TimeStamp - startTime;
 
                 double? speed = point.Speed;
-                if (speed == null 
-                    && previousPoint != null 
-                    && previousPoint.HasPosition 
+                if (speed == null
+                    && previousPoint != null
+                    && previousPoint.HasPosition
                     && previousPoint.Distance.HasValue
-                    && point.Position != LatLong.Empty 
-                    && point.DistanceInMeters > 0 
+                    && point.Position != LatLong.Empty
+                    && point.DistanceInMeters > 0
                     && elapsedTime.TotalSeconds > 0)
                 {
                     double kilometersTraveled =
@@ -110,7 +110,7 @@ namespace SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap
                 sessionPoints,
                 new Position(bottomLatitude, leftLongitude),
                 new Position(topLatitude, rightLongitude),
-                previousPoint != null ? (int) previousPoint.Time.TotalSeconds : 0);
+                previousPoint != null ? (int)previousPoint.Time.TotalSeconds : 0);
         }
 
         public IReadOnlyList<SessionDisplayablePoint> SessionPoints { get; }

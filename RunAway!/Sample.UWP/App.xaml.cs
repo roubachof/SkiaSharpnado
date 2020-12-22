@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-using Sharpnado.Infrastructure;
+using Sharpnado.Presentation.Forms;
 
 namespace Sample.UWP
 {
@@ -45,7 +45,7 @@ namespace Sample.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                InternalLogger.EnableLogging = true;
+                InternalLogger.EnableLogger(true, true);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -54,7 +54,7 @@ namespace Sample.UWP
 
                 Xamarin.Forms.Forms.Init(e);
 
-                Xamarin.FormsMaps.Init("uZZHK7NHcEVrgcvDeklV~fVgyPHDxXanPEls2KeJ1_Q~Aulz4feTcIflGlHHfZzky3-uKMqV0AIl3kwdK1fzyZayy85x2pQ7lVDaJy3MT3RZ");
+                Xamarin.FormsGoogleMaps.Init("your_bing_maps_api_key");
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -76,7 +76,7 @@ namespace Sample.UWP
         /// </summary>
         /// <param name="sender">The Frame which failed navigation</param>
         /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }

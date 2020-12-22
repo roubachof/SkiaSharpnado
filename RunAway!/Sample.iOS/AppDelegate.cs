@@ -6,14 +6,14 @@ using UIKit;
 
 namespace Sample.iOS
 {
-    // The UIApplicationDelegate for the application. This class is responsible for launching the 
-    // User Interface of the application, as well as listening (and optionally responding) to 
+    // The UIApplicationDelegate for the application. This class is responsible for launching the
+    // User Interface of the application, as well as listening (and optionally responding) to
     // application events from iOS.
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
         //
-        // This method is invoked when the application has loaded and is ready to run. In this 
+        // This method is invoked when the application has loaded and is ready to run. In this
         // method you should instantiate the window, load the UI into it and then make the window
         // visible.
         //
@@ -22,11 +22,8 @@ namespace Sample.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            
-            // Xamarin.FormsGoogleMaps.Init("AIzaSyB4b_bnQ-ygx90fmzLQmjC6z87iekGcd-0");
-            // Xamarin.FormsGoogleMaps.Init("AIzaSyBqvs9lCvVEbk7sfuht7sKVOrXt3YBAglg");
 
-            Xamarin.FormsMaps.Init();
+            Xamarin.FormsGoogleMaps.Init("your_google_maps_ios_api_key");
 
             SharpnadoInitializer.Initialize(true);
             var _ = new TouchTracking.Forms.iOS.TouchEffect();

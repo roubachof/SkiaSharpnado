@@ -4,12 +4,22 @@ using System.Diagnostics;
 using SkiaSharpnado.Maps.Domain;
 
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace SkiaSharpnado.Maps.Presentation.Views
 {
     public static class PositionExtensions
     {
+        public static LatLong ToLatLong(this CameraPosition position)
+        {
+            if (position.Target.Latitude == 0 && position.Target.Longitude == 0)
+            {
+                return LatLong.Empty;
+            }
+
+            return new LatLong(position.Target.Latitude, position.Target.Longitude);
+        }
+
         public static LatLong ToLatLong(this Position position)
         {
             if (position.Latitude == 0 && position.Longitude == 0)
@@ -48,7 +58,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views
 
         public void UpdateCamera(Map mapRendering, Size mapSize, double pixelDensity)
         {
-            UpdateCamera(mapRendering.Camera.Position.ToLatLong(), mapRendering.Camera.Zoom, mapSize, pixelDensity);
+            UpdateCamera(mapRendering.CameraPosition.ToLatLong(), mapRendering.CameraPosition.Zoom, mapSize, pixelDensity);
         }
 
         public void UpdateCamera(LatLong centerLocation, double zoomLevel, Size mapSize, double pixelDensity)

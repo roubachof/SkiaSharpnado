@@ -9,8 +9,7 @@ using Prism.Navigation;
 using Sample.Domain;
 using Sample.Localization;
 
-using Sharpnado.Presentation.Forms.ViewModels;
-
+using Sharpnado.Presentation.Forms;
 using SkiaSharpnado.Maps.Presentation.ViewModels.SessionMap;
 using SkiaSharpnado.ViewModels;
 
@@ -33,10 +32,10 @@ namespace Sample.ViewModels
         {
             _activityService = activityService;
 
-            Loader = new ViewModelLoader<SessionMapInfo>(emptyStateMessage: AppResources.EmptyActivityMessage);
+            Loader = new TaskLoaderNotifier<SessionMapInfo>(/*emptyStateMessage: AppResources.EmptyActivityMessage*/);
         }
 
-        public ViewModelLoader<SessionMapInfo> Loader { get; }
+        public TaskLoaderNotifier<SessionMapInfo> Loader { get; }
 
         public SessionGraphInfo GraphInfo { get; private set; }
 
@@ -76,7 +75,7 @@ namespace Sample.ViewModels
             set => SetProperty(ref _currentDistance, value);
         }
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             string activityId = parameters.GetValue<string>("activityId");
 

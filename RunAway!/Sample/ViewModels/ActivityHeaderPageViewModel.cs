@@ -8,9 +8,8 @@ using Prism.Navigation;
 
 using Sample.Domain;
 using Sample.Localization;
-
-using Sharpnado.Presentation.Forms.ViewModels;
-
+using Sharpnado.Presentation.Forms;
+using Sharpnado.Tasks;
 using SkiaSharpnado.Maps.Domain;
 using SkiaSharpnado.ViewModels;
 
@@ -29,16 +28,16 @@ namespace Sample.ViewModels
         {
             _activityService = activityService;
 
-            Loader = new ViewModelLoader<List<ActivityHeaderViewModel>>(emptyStateMessage: AppResources.EmptyActivityMessage);
+            Loader = new TaskLoaderNotifier<List<ActivityHeaderViewModel>>(/*emptyStateMessage: AppResources.EmptyActivityMessage*/);
             ActivityTappedCommand = new Command<ActivityHeaderViewModel>(
                 item => NavigationService.NavigateAsync($"ActivityPage?activityId={item.Id}"));
         }
 
         public ICommand ActivityTappedCommand { get; }
 
-        public ViewModelLoader<List<ActivityHeaderViewModel>> Loader { get; }
+        public TaskLoaderNotifier<List<ActivityHeaderViewModel>> Loader { get; }
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             Title = AppResources.ActivityHeaderPageTitle;
 
