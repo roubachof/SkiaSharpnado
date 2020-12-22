@@ -54,7 +54,7 @@ namespace Sample.UWP
 
                 Xamarin.Forms.Forms.Init(e);
 
-                Xamarin.FormsGoogleMaps.Init("iYFgsMmUmHCr74Ik2Vr8~Fw1KVC0EU0tO3e_zQuRDcw~ApsOLTWbYUrAd-0x2bfb0BCrFujaKAqcyxheSKJf5AeHhUDz939jyNyFgL70Oy6z");
+                Xamarin.FormsGoogleMaps.Init("your_bing_maps_api_key");
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
