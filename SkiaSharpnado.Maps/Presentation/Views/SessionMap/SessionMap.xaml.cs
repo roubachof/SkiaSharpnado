@@ -201,7 +201,11 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             {
                 Debug.WriteLine($"InitializeMap");
 
-                GoogleMap.MoveToRegion(SessionMapInfo.Region);
+                Device.StartTimer(TimeSpan.FromMilliseconds(500), () =>
+                {
+                    GoogleMap.MoveToRegion(SessionMapInfo.Region, true);
+                    return false;
+                });
             }
         }
 
