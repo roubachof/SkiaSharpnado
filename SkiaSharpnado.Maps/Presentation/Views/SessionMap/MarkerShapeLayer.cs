@@ -13,7 +13,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 
         public override void Draw(SKCanvas canvas, SKPaint paint)
         {
-            if (Layer.Length == 0 || Layer[0].Time > MaxTime)
+            if (Layer.Length == 0 /*|| Layer[0].Time > MaxTime*/)
             {
                 return;
             }

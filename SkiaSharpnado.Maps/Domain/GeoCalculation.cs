@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkiaSharpnado.Maps.Presentation.Views;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace SkiaSharpnado.Maps.Domain
 {

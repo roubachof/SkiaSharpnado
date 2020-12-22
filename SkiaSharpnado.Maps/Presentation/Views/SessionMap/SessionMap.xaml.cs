@@ -15,7 +15,7 @@ using Xamarin.Forms;
 using SKSvg = SkiaSharp.Extended.Svg.SKSvg;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Xamarin.Forms.Maps;
+using Xamarin.Forms.GoogleMaps;
 
 namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
 {
@@ -85,9 +85,9 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
         {
             InitializeComponent();
 
-            // LayoutChanged += OnLayoutChanged;
+            //LayoutChanged += OnLayoutChanged;
 
-            //GoogleMap.CameraChanged += GoogleMapCameraChanged;
+            GoogleMap.CameraChanged += GoogleMapCameraChanged;
         }
 
         public void OnDestroy()
@@ -205,20 +205,20 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
             }
         }
 
-        //private void GoogleMapCameraChanged(object sender, CameraChangedEventArgs e)
-        //{
-        //    // Debug.WriteLine($"CameraChanged: pos: {e.Camera.Position.Latitude}, {e.Camera.Position.Longitude}");
+        private void GoogleMapCameraChanged(object sender, CameraChangedEventArgs e)
+        {
+            Debug.WriteLine($"CameraChanged: pos: {e.Position.Target.Latitude}, {e.Position.Target.Longitude}");
 
-        //    if (!_isCameraInitialized)
-        //    {
-        //        _isCameraInitialized = true;
-        //    }
+            if (!_isCameraInitialized)
+            {
+                _isCameraInitialized = true;
+            }
 
-        //    if (_drawingCount == 0)
-        //    {
-        //        MapOverlay.InvalidateSurface();
-        //    }
-        //}
+            if (_drawingCount == 0)
+            {
+                MapOverlay.InvalidateSurface();
+            }
+        }
 
         private void InitializeMapResourcesIfNeeded()
         {
@@ -325,7 +325,7 @@ namespace SkiaSharpnado.Maps.Presentation.Views.SessionMap
                 return;
             }
 
-            //_positionConverter.UpdateCamera(GoogleMap, new Size(info.Width, info.Height), SkiaHelper.PixelPerUnit);
+            _positionConverter.UpdateCamera(GoogleMap, new Size(info.Width, info.Height), SkiaHelper.PixelPerUnit);
 
             var centerPoint = _positionConverter[_centerPosition].ToSKPoint();
             var topLeftPoint = _positionConverter[_topLeftPosition].ToSKPoint();

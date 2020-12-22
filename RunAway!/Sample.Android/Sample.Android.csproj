@@ -79,7 +79,7 @@
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.CustomTabs" Version="28.0.0.3" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.0-rc1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.0.2-alpha03" />
     <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.3.0.4" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.2.1.1" />
